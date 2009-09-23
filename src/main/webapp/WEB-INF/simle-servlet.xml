@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" 
+		xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:util="http://www.springframework.org/schema/util"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd     
+					http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+					http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!--
+		- The controllers are autodetected POJOs labeled with the @Controller annotation.
+	-->
+	<context:component-scan base-package="jpl.simle" use-default-filters="false">
+		<context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+	</context:component-scan>
+
+	<!--
+		- This bean resolves specific types of exceptions to corresponding logical 
+		- view names for error views. The default behaviour of DispatcherServlet 
+		- is to propagate all exceptions to the servlet container: this will happen 
+		- here with all other types of exceptions.
+	-->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key=".DataAccessException">dataAccessFailure</prop>		
+				<prop key=".NoSuchRequestHandlingMethodException">resourceNotFound</prop>	
+				<prop key=".TypeMismatchException">resourceNotFound</prop>				
+				<prop key=".lang.Exception">uncaughtException</prop>				
+			</props>
+		</property>
+	</bean>
+	
+		<!--
+		- This view resolver delegates to the InternalResourceViewResolver and
+		BeanNameViewResolver, and uses the requested media type to pick a
+		matching view. When the media type is 'text/html', it will delegate to
+		the InternalResourceViewResolver's JstlView, otherwise to the
+		BeanNameViewResolver.
+	-->
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver"
+		p:order="0">
+		<property name="mediaTypes">
+			<map>
+				<entry key="xml" value="#{xmlView.contentType}" />
+				<entry key="html" value="text/html"/>
+				<entry key="json" value="application/json"/>
+			</map>
+		</property>
+		<property name="viewResolvers">
+			<list>
+				<ref local="xmlViewResolver"/>
+				<ref local="jspViewResolver"/>
+				<ref local="jsonViewResolver"/>
+			</list>
+		</property>
+	</bean>
+
+	<!--
+		The BeanNameViewResolver is used to pick up the view name (below) It
+		has the order property set to 2, which means that this will be the
+		first view resolver to be used after the delegating content
+		negotiating view resolver
+	-->
+	<bean id="xmlViewResolver" class="jpl.simle.web.resolvers.StaticViewResolver"
+		p:order="1">
+		<property name="view" ref="xmlView"/>
+	</bean>
+	
+	<bean id="jsonViewResolver" class="jpl.simle.web.resolvers.StaticViewResolver"
+		p:order="2">
+		<property name="view" ref="jsonView"/>	
+	</bean>
+
+	<bean id="xmlView" class="org.springframework.web.servlet.view.xml.MarshallingView">
+		<property name="marshaller" ref="xstreamMarshaller"/>
+	</bean>
+	
+	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+	
+	</bean>
+	<!-- Enable the marshallers -->
+	
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<util:list id="beanList">
+				<ref bean="stringHttpMessageConverter" />
+				<ref bean="marshallingHttpMessageConverter" />
+			</util:list>
+		</property>
+	</bean>
+
+	<bean id="stringHttpMessageConverter"
+		class="org.springframework.http.converter.StringHttpMessageConverter" />
+
+
+	<bean id="marshallingHttpMessageConverter"
+		class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+		<property name="marshaller" ref="xstreamMarshaller" />
+		<property name="unmarshaller" ref="xstreamMarshaller" />
+	</bean>
+
+	<!-- 
+		Configure the XStreamMarshaller, we have to specify all of the annotated classes
+		here or else they won't get set, and the default marshalling will fail
+	 -->
+	<bean id="xstreamMarshaller" class="jpl.simle.marshallers.XStreamMarshaller">
+		<property name="annotatedClasses">
+			<util:list id="classList">
+				<value>jpl.simle.domain.Application</value>
+				<value>jpl.simle.domain.Host</value>
+				<value>jpl.simle.domain.Lab</value>
+				<value>jpl.simle.domain.Protocol</value>
+			</util:list>
+		</property>
+	</bean>
+
+	<!--
+		- This bean configures the 'prefix' and 'suffix' properties of 
+		- InternalResourceViewResolver, which resolves logical view names 
+		- returned by Controllers. For example, a logical view name of "vets" 
+		- will be mapped to "/WEB-INF/jsp/vets.jsp".
+	-->
+	<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" p:order="3"/>
+
+	<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver"/>
+	
+	<bean id="labManagerDAO" class="jpl.simle.dao.LabManagerDAO"/>
+	
+	<bean class="jpl.simle.domain.TestUsers" init-method="init"/>
+</beans>
