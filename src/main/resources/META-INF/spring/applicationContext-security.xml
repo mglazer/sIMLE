@@ -12,6 +12,7 @@
     				default-target-url="/labs" 
     				authentication-failure-url="/static/login.jsp?login_error=t"/>
     	<http-basic/>
+    	<remember-me data-source-ref="dataSource"/>
         <logout logout-url="/static/j_spring_security_logout"/>
         <!-- 
         <intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>

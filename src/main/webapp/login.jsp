@@ -15,8 +15,14 @@
     @import url("<c:url value="/static/styles/no-theme/jquery-ui-1.7.custom.css"/>");
   </style>     
   
+  <script type="text/javascript" src="<c:url value="/static/js/jquery-1.3.2.min.js"/>"></script>
   <title>sIMLE Login</title>	
- 
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#j_username").focus();
+		});
+	</script> 
 </head>
 
 <body class="tundra spring">	
@@ -40,7 +46,7 @@
 	<form id="login" name="f" action="<c:url value='/static/j_spring_security_check'/>" method="POST"> 
     	<div>
             <label for="j_username">Name:</label>
-            <input id="j_username" type='text' name='j_username'/>
+            <input id="j_username" type='text' name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/>
         </div>
         <br/>
         <div>
@@ -48,6 +54,10 @@
             <input id="j_password" type='password' name='j_password'/>
         </div>
         <br/>
+        <div>
+        	<input id="_spring_security_remember_me" name="_spring_security_remember_me" type="checkbox"/>
+        	<label for="j_remember_me">Don't ask for my password for two weeks</label>
+        </div>
         <div class="submit">
             <input id="proceed" type="submit" value="Login"/>
         </div>
