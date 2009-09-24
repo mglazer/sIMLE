@@ -11,6 +11,7 @@
     				login-page="/static/login.jsp" 
     				default-target-url="/labs" 
     				authentication-failure-url="/static/login.jsp?login_error=t"/>
+    	<http-basic/>
         <logout logout-url="/static/j_spring_security_logout"/>
         <!-- 
         <intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>
@@ -33,7 +34,6 @@
 	    </user-service>
 	    -->
 	</authentication-provider>
-	
 	
 
 </beans:beans>
