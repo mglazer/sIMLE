@@ -44,6 +44,7 @@ public class Application {
     {
     	Map<String,Object> model = new HashMap<String,Object>();
     	
+    	model.put("id", getId());
     	model.put("name", name);
     	model.put("notes", notes);
     	model.put("addedByUsername", addedByUsername);

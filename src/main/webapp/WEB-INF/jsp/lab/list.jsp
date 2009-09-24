@@ -1,4 +1,3 @@
-<!--WARNING: This file is maintained by ROO! IT WILL BE OVERWRITTEN unless you specify null	@RooWebScaffold(automaticallyMaintainView = false) in the governing controller-->
 <jsp:directive.include file="/WEB-INF/jsp/includes.jsp" />
 <jsp:directive.include file="/WEB-INF/jsp/header.jsp" />
 <div style="width: 100%" title="List all labs">

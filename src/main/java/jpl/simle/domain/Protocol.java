@@ -47,6 +47,7 @@ public class Protocol {
     {
     	Map<String,Object> model = new HashMap<String,Object>();
     	
+    	model.put("id", getId());
     	model.put("destinationIP", destinationIP);
     	model.put("direction", direction);
     	model.put("ports", ports);

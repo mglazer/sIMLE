@@ -22,11 +22,10 @@
 <body class="tundra spring">	
 
   <div id="wrap">
-  
-  	<div id="menu">
-    <p>You have tried to access a protected area of this application.</p>
-    <p>By default you can login as "admin", with a password of "admin".</p>
-	</div>
+ 
+   	<div id="logo">
+  		<img src="<c:url value="/static/images/simle-logo.png"/>" alt="sIMLE"/>
+  	</div>
 
   <div id="main">
 <div style="width: 100%" title="Spring Security Login">
@@ -50,8 +49,7 @@
         </div>
         <br/>
         <div class="submit">
-            <input id="proceed" type="submit" value="Submit"/>
-            <input id="reset" type="reset" value="Reset"/>
+            <input id="proceed" type="submit" value="Login"/>
         </div>
     </form>
 </div>

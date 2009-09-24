@@ -6,12 +6,14 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import jpl.simle.domain.Host;
+import jpl.simle.domain.HostApplication;
 import jpl.simle.domain.Lab;
 import jpl.simle.domain.Protocol;
 import jpl.simle.domain.Application;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.userdetails.UserDetails;
@@ -20,6 +22,8 @@ public class LabManagerDAO
 {
 	@javax.persistence.PersistenceContext
 	private	transient javax.persistence.EntityManager entityManager_;
+	
+	private AuthenticationDAO authenticationDAO_;
 
 	private final Logger logger_ = LoggerFactory.getLogger(getClass());
 	
@@ -161,6 +165,49 @@ public class LabManagerDAO
 		return application;
 	}
 	
+	public List<Application> findApplications()
+	{
+		return Application.findAllApplications();
+	}
+	
+	public HostApplication createHostApplicationLink(Application application, Host host)
+	{
+		HostApplication ha = new HostApplication();
+		
+		ha.setApplication(application);
+		ha.setHost(host);
+		
+		ha.persist();
+		
+		return ha;
+	}
+	
+	
+	public HostApplication updateHostApplicationLink(HostApplication link, Application application, Host host)
+	{
+		link.setApplication(application);
+		link.setHost(host);
+		
+		link.persist();
+		
+		return link;
+	}
+	
+	public HostApplication findHostApplicationLink(Long linkId)
+	{
+		return HostApplication.findHostApplication(linkId);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<HostApplication> findHostApplicationsForHost(Host host)
+	{
+		return HostApplication.findHostApplicationsByHost(host).getResultList();
+	}
+	
+	public void deleteHostApplicationLink(HostApplication link)
+	{
+		link.remove();
+	}
 	
 	/*
 	 *******************************
@@ -203,17 +250,9 @@ public class LabManagerDAO
 		return protocol;
 	}
 	
-	protected String getUsername() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		
-		if ( auth.getPrincipal() instanceof UserDetails )
-		{
-			return ((UserDetails) auth.getPrincipal()).getUsername();
-		}
-		else
-		{
-			return auth.getPrincipal().toString();
-		}
+	protected String getUsername() 
+	{
+		return authenticationDAO_.getAuthenticatedUsername();
 	}
 
 	public void setEntityManager(javax.persistence.EntityManager entityManager) {
@@ -222,6 +261,11 @@ public class LabManagerDAO
 
 	public javax.persistence.EntityManager getEntityManager() {
 		return entityManager_;
+	}
+	
+	public void setAuthenticationDAO(AuthenticationDAO authenticationDAO)
+	{
+		authenticationDAO_ = authenticationDAO;
 	}
 
 

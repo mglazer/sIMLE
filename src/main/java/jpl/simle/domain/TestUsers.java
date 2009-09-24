@@ -31,5 +31,11 @@ public class TestUsers
 		
 		lab.persist();
 		
+		
+		Application app = new Application();
+		app.setName("TENA");
+		app.setNotes("These are some TENA notes");
+		
+		app.persist();
 	}
 }

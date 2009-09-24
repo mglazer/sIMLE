@@ -1,5 +1,6 @@
 package jpl.simle.web;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,10 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jpl.simle.dao.LabManagerDAO;
+import jpl.simle.domain.Application;
 import jpl.simle.domain.Host;
+import jpl.simle.domain.HostApplication;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -63,6 +67,103 @@ public class HostController {
     	{
     		return new ModelAndView("/lab/" + labId + "/host/new", "host", host);
     	}
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/lab/{labId}/host/{hostId}/addApplication")
+    public ModelMap addApplication(@PathVariable Long labId,
+    							   @PathVariable Long hostId,
+    							   @RequestParam(required=false) Long appId
+    								   )
+    {
+    	Host host = labManager_.findHost(labId, hostId);
+    	
+    	if ( host == null )
+    	{
+    		return new ModelMap("error", "Could not find host with id " + hostId);
+    	}
+    	
+    	Application application;
+    	
+    	if ( appId != null )
+    	{
+    		application = labManager_.findApplication(appId);
+    	}
+    	else
+    	{
+    		application = Application.findApplicationEntries(0, 1).get(0);
+    	}
+    	
+    	if ( application == null )
+    	{
+    		return new ModelMap("error", "Could not find application with id " + appId);
+    	}
+    	
+    	HostApplication link = labManager_.createHostApplicationLink(application, host);
+    	
+    	List<Application> applications = labManager_.findApplications();
+    	
+    	ModelMap modelMap = new ModelMap();
+    	modelMap.addAttribute("applications", applications);
+    	modelMap.addAttribute("linkId", link.getId());
+    	
+    	return modelMap;
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/lab/{labId}/host/{hostId}/updateApplicationLink/{linkId}")
+    public ModelMap updateApplicationConnection(@PathVariable Long labId,
+    											@PathVariable Long hostId,
+    											@PathVariable Long linkId,
+    											@RequestParam Long appId,
+    											HttpServletRequest request)
+    {
+    	Host host = labManager_.findHost(labId, hostId);
+    	
+    	if ( host == null )
+    	{
+    		return new ModelMap("error", "Could not find host with id " + hostId);
+    	}
+    	
+    	Application application = labManager_.findApplication(appId);
+    	
+    	if ( application == null )
+    	{
+    		return new ModelMap("error", "Could not find application with id " + appId);
+    	}
+    	
+    	HostApplication link = labManager_.findHostApplicationLink(linkId);
+    	
+    	if ( link == null )
+    	{
+    		return new ModelMap("error", "Could not find host-application link with id " + linkId);
+    	}
+    	
+    	labManager_.updateHostApplicationLink(link, application, host);
+    	
+    	return new ModelMap("success", "Successfully updated link");
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/lab/{labId}/host/{hostId}/deleteApplicationLink/{linkId}")
+    public ModelMap deleteApplicationLink(@PathVariable Long labId,
+    									  @PathVariable Long hostId,
+    									  @PathVariable Long linkId)
+    {
+    	Host host = labManager_.findHost(labId, hostId);
+    	
+    	if ( host == null )
+    	{
+    		return new ModelMap("error", "Could not find host with id " + hostId);
+    	}
+    	
+    	HostApplication link = labManager_.findHostApplicationLink(linkId);
+    	
+    	if ( link == null )
+    	{
+    		return new ModelMap("error", "Could not find link with id " + linkId);
+    	}
+    	
+    	labManager_.deleteHostApplicationLink(link);
+    	
+    	return new ModelMap("success", "Successfully deleted link");
     }
     
     @Autowired

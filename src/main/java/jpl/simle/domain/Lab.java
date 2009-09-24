@@ -54,6 +54,7 @@ public class Lab {
     {
     	Map<String,Object> model = new HashMap<String,Object>();
     	
+    	model.put("id", getId());
     	model.put("username", getUsername());
     	model.put("name", getName());
     	model.put("location", getLocation());

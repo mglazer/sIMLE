@@ -53,6 +53,7 @@ public class Host {
     	model.put("dnsNames", getDnsNames());
     	model.put("id", getId());
     	model.put("lab", lab.getId());
+    	model.put("applications", HostApplication.findHostApplicationsByHost(this).getResultList());
 
     	/* TODO: We need to add in the application associations in here */
     	

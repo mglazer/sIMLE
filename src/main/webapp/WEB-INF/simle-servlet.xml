@@ -126,7 +126,11 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
 	<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver"/>
 	
-	<bean id="labManagerDAO" class="jpl.simle.dao.LabManagerDAO"/>
+	<bean id="authenticationDAO" class="jpl.simle.dao.AuthenticationDAO"/>
+	
+	<bean id="labManagerDAO" class="jpl.simle.dao.LabManagerDAO">
+		<property name="authenticationDAO" ref="authenticationDAO"/>
+	</bean>
 	
 	<bean class="jpl.simle.domain.TestUsers" init-method="init"/>
 </beans>

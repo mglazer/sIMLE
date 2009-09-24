@@ -36,22 +36,26 @@
 
 	function protocolsReceived(data) {
 		$("#protocolTable tbody").html("");
-		var data = eval('(' + data +')');
-		console.log(data);
+		data = eval('(' + data + ')');
 		jQuery.each(data.protocols, function() {
 			addProtocol(this);
 		});
 	}
 
 	$(document).ready(function() {
-		$.get("${protocol_json_url}", protocolsReceived);
+		$.get("${protocols_json_url}", protocolsReceived, "json");
 		$('#protocolForm').ajaxForm({
 			dataType: 'json',
 			success: function(data) { addProtocol(data.protocol); },
 			error: displayAjaxError
 		});
-		$("#notes").click(function() {
+		$("#notes").focus(function() {
 			$(this).select();
+		});
+		$(":input").focus(function() {
+			$(this).addClass("highlight");
+		}).blur(function() {
+			$(this).removeClass("highlight");
 		});
 	});
 
@@ -82,6 +86,8 @@
 	</table>
 	
 	<c:url value="/application/${application.id}/protocol/" var="create_protocol_url"/>
+	<fieldset>
+	<legend>Add Protocol</legend>
 	<form id="protocolForm" action="${create_protocol_url}" method="POST">
 		<dl>
 			<dd><label for="applicationProtocol">Application Protocol:</label></dd>
@@ -103,9 +109,10 @@
 			<dt><textarea id="notes" name="notes" cols="30" rows="5">Notes...</textarea></dt>
 		</dl>
 		<div class="buttons">
-			<input type="submit" value="Add Protocol"/>
+			<input type="submit" value="Add"/>
 		</div>
 	</form> 
+	</fieldset>
 		
 </c:if>
 <c:if test="${empty application}">No application found with this id.</c:if>

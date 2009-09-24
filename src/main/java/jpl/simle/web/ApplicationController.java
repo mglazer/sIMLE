@@ -1,5 +1,9 @@
 package jpl.simle.web;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,11 +22,20 @@ import org.springframework.web.servlet.ModelAndView;
 public class ApplicationController {
 	
 	private LabManagerDAO labManager_;
+	private final Logger logger_ = LoggerFactory.getLogger(getClass());
+	
+	@RequestMapping(value="/applications")
+	public ModelAndView list()
+	{
+		List<Application> applications = Application.findAllApplications();
+		
+		return new ModelAndView("/application/list", "applications", applications);
+	}
 	
 	@RequestMapping(value="/application/new")
 	public ModelAndView newApplication(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
 	{
-		return new ModelAndView("new", "application", new Application());
+		return new ModelAndView("/application/new", "application", new Application());
 	}
 	
 	@RequestMapping(value="/application/{applicationId}/edit")
@@ -35,20 +48,23 @@ public class ApplicationController {
 			return new ModelAndView("redirect:error", "errors", "Could not find application with id " + applicationId);
 		}
 		
-		return new ModelAndView("edit", "application", app);
+		return new ModelAndView("/application/edit", "application", app);
 	}
 
     @RequestMapping(value="/application/{applicationId}")
     public ModelAndView get(@PathVariable Long applicationId,
     			    ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
     {
-    	return new ModelAndView("show", "application", Application.findApplication(applicationId));
+    	return new ModelAndView("/application/show", "application", Application.findApplication(applicationId));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/application/")
+    @RequestMapping(method = RequestMethod.POST, value = "/application")
     public ModelAndView post(Application application, HttpServletRequest request, HttpServletResponse response) 
     {
+    	logger_.info("Request to save application with name " + application.getName());
     	labManager_.saveApplication(application);
+    	
+    	logger_.info("Saved application, got back id: " + application.getId());
     	
     	if ( application.getId() != null )
     	{

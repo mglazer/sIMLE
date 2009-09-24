@@ -10,7 +10,6 @@
     	<form-login login-processing-url="/static/j_spring_security_check" 
     				login-page="/static/login.jsp" 
     				default-target-url="/labs" 
-    				always-use-default-target="true" 
     				authentication-failure-url="/static/login.jsp?login_error=t"/>
         <logout logout-url="/static/j_spring_security_logout"/>
         <!-- 
