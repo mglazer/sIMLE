@@ -1,5 +1,13 @@
 <jsp:directive.include file="/WEB-INF/jsp/includes.jsp" />
 <jsp:directive.include file="/WEB-INF/jsp/header.jsp" />
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		<c:forEach items="${labs}" var="lab">
+		getFlexApp("NodeMap").addMarker("${lab.id}", ${lab.latitude}, ${lab.longitude});
+		</c:forEach>
+	});
+</script>
 <div style="width: 100%" title="List all labs">
 <c:if test="${not empty labs}">
 	<table width="300px">
@@ -8,6 +16,7 @@
 			<th>Id</th>
 			<th>Name</th>
 			<th>Location</th>
+			<th />
 			<th />
 			<th />
 			<th />
@@ -23,6 +32,12 @@
 					<form:form action="${show_form_url}" method="GET">
 					<input alt="Show lab" src="${show_image_url}" title="Show lab"
 						type="image" value="Show lab" />
+					</form:form>
+				</td>
+				<td><c:url value="/lab/${lab.id}.iml" var="show_iml_url" />
+					<c:url value="/static/images/iml.png" var="show_iml_image_url" />
+					<form:form action="${show_iml_url}" method="GET">
+					<input alt="Show IML" src="${show_iml_image_url}" title="Show IML" type="image" value="Show IML"/>
 					</form:form>
 				</td>
 				<td>
@@ -45,4 +60,6 @@
 		</c:forEach>
 	</table>
 </c:if> <c:if test="${empty labs}">No labs found.</c:if></div>
+
+<jsp:directive.include file="/WEB-INF/jsp/embed_google_map.jsp"/>
 <jsp:directive.include file="/WEB-INF/jsp/footer.jsp" />

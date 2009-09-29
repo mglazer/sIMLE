@@ -11,6 +11,10 @@
 		<label for="_location">Location:</label>
 		<form:input id="_location" maxlength="30" path="location" size="0" />
 	</div>
+	<div id="lab_domainName">
+		<label for="_domainName">Domain Name:</label>
+		<form:input id="_domainName" maxLength="30" path="domainName" size="0"/>
+	</div>
 	<div class="submit" id="lab_submit">
 		<input id="proceed" type="submit" value="Save" />
 	</div>

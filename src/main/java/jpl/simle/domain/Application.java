@@ -39,6 +39,12 @@ public class Application {
 
     private String addedByUsername;
     
+    public void addProtocol(Protocol protocol)
+    {
+    	protocols.add(protocol);
+    	protocol.setApplication(this);
+    }
+    
     @JsonValue
     public Map<String,Object> toJSON()
     {

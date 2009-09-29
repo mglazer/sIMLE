@@ -125,8 +125,7 @@ public class LabManagerDAO
 		
 		if ( host.getId() == null )
 		{
-			host.setLab(lab);
-			lab.getHosts().add(host);
+			lab.addHost(host);
 			host.persist();
 		}
 		else
@@ -242,8 +241,7 @@ public class LabManagerDAO
 			throw new NoResultException("No protocol found with id " + appId);
 		}
 		
-		app.getProtocols().add(protocol);
-		protocol.setApplication(app);
+		app.addProtocol(protocol);
 		
 		protocol.persist();
 		

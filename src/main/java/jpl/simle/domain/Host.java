@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import jpl.simle.domain.Application;
 import jpl.simle.domain.Lab;
+import jpl.simle.domain.validator.IPAddress;
+
 import java.util.HashSet;
 import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
@@ -42,6 +44,7 @@ public class Host {
 
     private String dnsNames;
 
+    @IPAddress
     private String addressIP;
     
     @JsonValue

@@ -25,17 +25,52 @@ public class TestUsers
 
 		// create a new lab for testing
 		Lab lab = new Lab();
-		lab.setName("testlab");
+		lab.setName("ITEC");
 		lab.setUsername(user.getUsername());
-		lab.setLocation("somelocation");
+		lab.setLocation("34.1205,119.1035");
+		lab.setDomainName("domain.itec.com");
 		
 		lab.persist();
 		
+		Host host = new Host();
+		lab.addHost(host);
+		host.setAddressIP("23.54.43.98");
+		host.setDnsNames("el.acetef.pax");
+		host.setName("PC1");
+	
+		host.persist();
 		
 		Application app = new Application();
 		app.setName("TENA");
 		app.setNotes("These are some TENA notes");
 		
 		app.persist();
+		
+		Protocol protocol = new Protocol();
+		app.addProtocol(protocol);
+		protocol.setNetworkProtocol(Protocol.NetworkProtocol.UDP);
+		protocol.setApplicationProtocol("TENA");
+		protocol.setDirection(Protocol.Direction.BOTH);
+		protocol.setPorts("55100,55300,55900");
+		protocol.setNotes("Only ports that are a multiple of 100 are assigned in the range of ports");
+		
+		protocol.persist();
+		
+		protocol = new Protocol();
+		app.addProtocol(protocol);
+		protocol.setNetworkProtocol(Protocol.NetworkProtocol.TCP);
+		protocol.setApplicationProtocol("Starship");
+		protocol.setDirection(Protocol.Direction.BOTH);
+		protocol.setPorts("55802");
+		protocol.setNotes("Starship");
+		
+		protocol.persist();
+		
+		HostApplication ha = new HostApplication();
+		ha.setApplication(app);
+		ha.setHost(host);
+		
+		ha.persist();
+		
 	}
 }

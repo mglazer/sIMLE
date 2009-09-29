@@ -34,4 +34,12 @@ privileged aspect Lab_Roo_JavaBean {
         this.location = location;        
     }    
     
+    public java.lang.String Lab.getDomainName() {    
+        return this.domainName;        
+    }    
+    
+    public void Lab.setDomainName(java.lang.String domainName) {    
+        this.domainName = domainName;        
+    }    
+    
 }

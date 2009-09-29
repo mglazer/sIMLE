@@ -4,6 +4,7 @@ privileged aspect Protocol_Roo_ToString {
     
     public java.lang.String Protocol.toString() {    
         StringBuilder sb = new StringBuilder();        
+        sb.append("portsList: ").append(java.util.Arrays.toString(getPortsList())).append(", ");        
         sb.append("id: ").append(getId()).append(", ");        
         sb.append("version: ").append(getVersion()).append(", ");        
         sb.append("application: ").append(getApplication()).append(", ");        

@@ -13,6 +13,7 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
 
 import jpl.simle.domain.Application;
+import jpl.simle.domain.validator.IPAddress;
 
 import javax.validation.constraints.NotNull;
 import javax.persistence.ManyToOne;
@@ -25,11 +26,24 @@ import javax.persistence.JoinColumn;
 @JsonAutoDetect(JsonMethod.NONE)
 public class Protocol {
 
+	public enum NetworkProtocol {
+		UDP,
+		TCP;
+	}
+	
+	public enum Direction {
+		IN,
+		OUT,
+		BOTH;
+	}
+
+	
     @NotNull
     @ManyToOne(targetEntity = Application.class)
     @JoinColumn
     private Application application;
 
+    @IPAddress
     private String destinationIP;
 
     private String direction;
@@ -41,6 +55,28 @@ public class Protocol {
     private String applicationProtocol;
 
     private String notes;
+    
+    public void setNetworkProtocol(NetworkProtocol protocol)
+    {
+    	networkProtocol = protocol.toString();
+    }
+    
+    public void setDirection(Direction direction)
+    {
+    	this.direction = direction.toString();
+    }
+    
+    public String[] getPortsList()
+    {
+    	if ( ports == null )
+    	{
+    		return new String[0];
+    	}
+    	else
+    	{
+    		return ports.split(",");
+    	}
+    }
     
     @JsonValue
     public Map<String,Object> toJSON()
