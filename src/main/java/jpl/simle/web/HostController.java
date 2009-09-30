@@ -82,15 +82,21 @@ public class HostController {
     		return new ModelMap("error", "Could not find host with id " + hostId);
     	}
     	
-    	Application application;
+    	Application application = null;
     	
+    	// if they don't specify an application ID (which is the case when they don't know which
+    	// applications exist), then just find the first application that exists
     	if ( appId != null )
     	{
     		application = labManager_.findApplication(appId);
     	}
     	else
     	{
-    		application = Application.findApplicationEntries(0, 1).get(0);
+    		List<Application> applications = Application.findApplicationEntries(0, 1);
+    		if ( applications.size() > 0 )
+    		{
+    			application = applications.get(0);
+    		}
     	}
     	
     	if ( application == null )

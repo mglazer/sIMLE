@@ -3,10 +3,17 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		<c:forEach items="${labs}" var="lab">
-		getFlexApp("NodeMap").addMarker("${lab.id}", ${lab.latitude}, ${lab.longitude});
-		</c:forEach>
+
 	});
+
+	function mapInitialized()
+	{
+		var map = getFlexApp("NodeMap");
+		<c:forEach items="${labs}" var="lab">
+		map.addMarker("${lab.id}", ${lab.latitude}, ${lab.longitude});
+		</c:forEach>
+	}
+		
 </script>
 <div style="width: 100%" title="List all labs">
 <c:if test="${not empty labs}">
@@ -48,6 +55,7 @@
 							title="Update lab" type="image" value="Update lab" />
 					</form:form>
 				</td>
+				<%-- 
 				<td>
 					<c:url value="/lab/${lab.id}" var="delete_form_url" /> <c:url
 					value="/static/images/delete.png" var="delete_image_url" /> 
@@ -56,10 +64,16 @@
 						title="Delete lab" type="image" value="Delete lab" />
 					</form:form>
 				</td>
+				--%>
 			</tr>
 		</c:forEach>
 	</table>
 </c:if> <c:if test="${empty labs}">No labs found.</c:if></div>
+
+<div class="buttons">
+	<c:url value="/lab/new" var="new_lab_url"/>
+	<a href="${new_lab_url}">Create New Lab</a>
+</div>
 
 <jsp:directive.include file="/WEB-INF/jsp/embed_google_map.jsp"/>
 <jsp:directive.include file="/WEB-INF/jsp/footer.jsp" />

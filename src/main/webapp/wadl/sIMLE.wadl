@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="wadl_documentation.xsl"?>
+<application xmlns="http://research.sun.com/wadl/2006/10"
+             xmlns:xsi="http:/www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:html="http://www.w3.org/1999/xhtml"
+             xmlns:iml="http://www.jpl.nasa.gov/research/pbm/iml"
+             xsi:schemaLocation="http://research.sun.com/wadl/2006/10 https://wadl.dev.java.net/wadl20061109.xsd">
+    
+    <doc title="sIMLE">
+        sIMLE is a web based IML editor.
+    </doc>
+    
+    <resources base="http://www.jpl.nasa.gov/research/pbm/iml/simle/">
+        <resource path="labs">
+            <method name="GET">
+                <doc>
+                    Get the available labs. Note that only labs available to the authenticated
+                    user will be shown.
+                </doc>
+                <request/>
+                <response>
+                </response>
+            </method>
+        </resource>
+        <resource path="lab/{lab_id}">
+            <param name="lab_id" style="template" type="xsd:string" required="true" />
+            <method name="GET">
+                <doc>
+                    Get the lab represented by the lab ID.
+                </doc>
+                <request></request>
+                <response></response>
+            </method>
+        </resource>
+        <resource path="lab/{lab_id}.iml">
+            <param name="lab_id" style="template" type="xsd:string" required="true" />
+            <param name="pretty" style="query" type="xsd:boolean" required="false">
+                <doc>
+                    If true, then the output will be pretty printed, otherwise it will
+                    be straight XML with no spacing or formatting.
+                </doc>
+            </param>
+            <method name="GET">
+                <doc>
+                    Get the lab represented by the lab ID in IML format. You can choose to
+                    have it pretty printed by setting the "pretty" parameter to true.
+                </doc>
+                <request></request>
+                <response>
+                    <representation mediaType="application/iml+xml"/>
+                </response>
+            </method>
+        </resource>
+        <resource path="lab">
+            <method name="POST">
+                <doc>
+                    Create a new lab. The newly created lab representation will then be returned
+                    along with its ID so that you can do something with it later.
+                </doc>
+                <request></request>
+                <response></response>
+            </method>
+        </resource>
+        <resource path="/lab/{lab_id}/hosts">
+            <param name="lab_id" style="template" type="xsd:string" required="true" />
+            <method name="GET">
+                <doc>
+                    Get the hosts associated with the given lab.
+                </doc>
+                <request></request>
+                <response></response>
+            </method>
+        </resource>
+        <resource path="/lab/{lab_id}/host/{host_id}">
+            <param name="lab_id" style="template" type="xsd:string" required="true"/>
+            <param name="host_id" style="template" type="xsd:string" required="true"/>
+            <method name="GET">
+                <doc>
+                    Get the host with the given host ID and lab ID.
+                </doc>
+                <request></request>
+                <response></response>
+            </method>
+        </resource>
+        <resource path="/lab/{lab_id}/host">
+            <param name="lab_id" style="template" type="xsd:string" required="true"/>
+            <method name="GET">
+                <doc>
+                    Create a new host.
+                </doc>
+            </method>
+        </resource>
+        <resource path="/lab/{lab_id}/host/{host_id}/addApplication">
+            <param name="lab_id" style="template" type="xsd:string" required="true"/>
+            <param name="host_id" style="template" type="xsd:string" required="true"/>
+            <param name="appId" style="query" type="xsd:string" required="false"/>
+            <method name="POST">
+                <doc>
+                    Add an application with a given application ID to the host. If you don't
+                    specify the application ID, then an application will be chosen at random,
+                    you can then update this association at a later date using the updateApplicationConnection
+                    resource, assuming you know the link ID (which is returned to you from this call).
+                </doc>
+            </method>
+        </resource>
+        <resource path="/lab/{lab_id}/host/{host_id}/updateApplicationLink/{linkId}">
+            <param name="lab_id" style="template" type="xsd:string" required="true"/>
+            <param name="host_id" style="template" type="xsd:string" required="true"/>
+            <param name="linkId" style="template" type="xsd:string" required="true"/>
+            <param name="appId" style="query" type="xsd:string" required="true"/>
+            <method name="POST">
+                <doc>
+                    Update the application link that was created when calling the addApplication
+                    resource method. You must specify the link ID that was given to you from that
+                    call.
+                </doc>
+            </method>
+        </resource>
+    </resources>
+</application>

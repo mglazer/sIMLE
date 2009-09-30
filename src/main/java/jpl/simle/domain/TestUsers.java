@@ -43,6 +43,7 @@ public class TestUsers
 		Application app = new Application();
 		app.setName("TENA");
 		app.setNotes("These are some TENA notes");
+		app.setAddedByUsername(user.getUsername());
 		
 		app.persist();
 		

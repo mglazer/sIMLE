@@ -35,6 +35,7 @@
 							title="Update application" type="image" value="Update application" />
 					</form:form>
 				</td>
+				<%--
 				<td>
 					<c:url value="/application/${application.id}" var="delete_form_url" /> <c:url
 					value="/static/images/delete.png" var="delete_image_url" /> 
@@ -43,10 +44,16 @@
 						title="Delete application" type="image" value="Delete application" />
 					</form:form>
 				</td>
+				--%>
 			</tr>
 		</c:forEach>
 	</table>
 </c:if> 
 
 <c:if test="${empty applications}">No applications found.</c:if></div>
+
+<div class="buttons">
+	<c:url value="/application/new" var="new_application_url"/>
+	<a href="${new_application_url}">Create New Application</a>
+</div>
 <jsp:directive.include file="/WEB-INF/jsp/footer.jsp" />

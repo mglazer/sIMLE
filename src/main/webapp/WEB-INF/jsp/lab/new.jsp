@@ -1,6 +1,26 @@
 <jsp:directive.include file="/WEB-INF/jsp/includes.jsp" />
 <jsp:directive.include file="/WEB-INF/jsp/header.jsp" />
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#map_pick").click(function() {
+			pickFromMap();
+		});
+	});
+
+	function pickFromMap()
+	{
+		getFlexApp("NodeMap").pickFromMap("newlab");
+	}
+
+	function handlePickFromMap(lat, lng)
+	{
+		$('#_location').val(lat + "," + lng);
+	}
+</script>
 <div style="width: 100%" title="Create New Lab"><c:url value="/lab" var="form_url" /> 
+
+
 
 <form:form	action="${form_url}" method="POST" modelAttribute="lab">
 	<div id="lab_name">
@@ -8,8 +28,9 @@
 		<form:input id="_name" maxlength="30" path="name" size="0" />
 	</div>
 	<div id="lab_location">
-		<label for="_location">Location:</label>
+		<label for="_location">Location (lat,lng):</label>
 		<form:input id="_location" maxlength="30" path="location" size="0" />
+		<a href="#" class="ui-state-default ui-corner-all map_pick_button" id="map_pick"><span class="ui-icon ui-icon-arrow-4">Pick From Map</span></a>
 	</div>
 	<div id="lab_domainName">
 		<label for="_domainName">Domain Name:</label>
@@ -22,4 +43,5 @@
 
 </div>
 
+<jsp:directive.include file="/WEB-INF/jsp/embed_google_map.jsp"/>
 <jsp:directive.include file="/WEB-INF/jsp/footer.jsp" />

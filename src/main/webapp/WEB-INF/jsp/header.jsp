@@ -1,7 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  
+  <link rel="wadl" type="application/wadl" href="<c:url value="/static/wadl/sIMLE.wadl"/>">
 
   <link rel='stylesheet' type='text/css' media="screen" href='<c:url value="/static/styles/no-theme/jquery-ui-1.7.custom.css"/>'>
   <link rel='stylesheet' type='text/css' media="screen" href='<c:url value="/static/styles/simle.css"/>'>  

@@ -56,7 +56,7 @@
         <br/>
         <div>
         	<input id="_spring_security_remember_me" name="_spring_security_remember_me" type="checkbox"/>
-        	<label for="j_remember_me">Don't ask for my password for two weeks</label>
+        	<label for="j_remember_me" id="remember_me">Don't ask for my password for two weeks</label>
         </div>
         <div class="submit">
             <input id="proceed" type="submit" value="Login"/>

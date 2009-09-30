@@ -102,8 +102,6 @@ div .box {
 }
 
 
-
-
 .footer {
 	background:#fff;
 	border:none;
@@ -359,25 +357,27 @@ fieldset th {
 }
 
 
-
+#logo {
+	float: left;
+}
 
 #menu {
-    background: #eee;
-  	position:relative;
   	float:left;  	
   	top: 35px;
   	left:0px;
-  	width:200px;
+  	display: inline-block;
 }
 
 #menu ul{
 	list-style: none;
 	margin: 0;
 	padding: 0;
+	display: inline;
 }
 
 #menu ul li{
 	padding: 0px;
+	display: inline;
 }
 
 
@@ -396,14 +396,57 @@ fieldset th {
 	font-size: 1em;
 }
 
-#menu a {
-	color: #666666;
-	background: #efefef;
-	text-decoration: none;
-	padding: 2px 12px;
-}
 
 #menu a:hover {
 	color: #FF4040;
-	background: #fff;
+	background: #EFEFEF;
+}
+
+#menu a img {
+	border: 0;
+}
+
+.map_pick_button {
+	padding: .4em 1em .4em 1em; 
+	text-decoration: none;
+	position: relative;
+}
+
+.map_pick_button span.ui-icon {
+	margin: 0;
+	position: absolute;
+	left: .3em;
+	top: 50%;
+	margin-top: -8px;
+}
+
+
+/* Login Form */
+
+form#login {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	-moz-border-radius-bottomleft:11px;
+	-moz-border-radius-bottomright:11px;
+	-moz-border-radius-topleft:11px;
+	-moz-border-radius-topright:11px;
+	-moz-box-shadow:0 4px 18px #C8C8C8;
+	background:#FFFFFF none repeat scroll 0 0;
+	border:1px solid #E5E5E5;
+	margin-left:8px;
+	margin-right:100px;
+	margin-top:50px;
+	padding:16px 16px 50px;
+	position:relative;
+	width:350px;
+}
+
+label#remember_me {
+	clear: none;
+	display: inline;
+}
+
+#login #proceed {
+	margin-top: 2em;
 }
