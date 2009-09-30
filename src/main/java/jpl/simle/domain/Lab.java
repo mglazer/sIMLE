@@ -9,6 +9,12 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.security.userdetails.UserDetails;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,43 +50,23 @@ public class Lab {
     private String name;
 
     @NotNull
-    @Pattern(
-    		regexp="[0-9]+.?[0-9]*,[0-9]+.?[0-9]*",
-    		message="Location must be of the form lat.itude,lon.gitude"
-    )
-    @XStreamAlias("location")
-    private String location;
-
-    @NotNull
     @XStreamAlias("domainName")
     private String domainName;
+
+    @NotNull
+    private Double latitude;
+
+    @NotNull
+    private Double longitude;
     
-    public void addHost(Host host)
+    public String getLocation()
     {
-    	host.setLab(this);
-    	hosts.add(host);
+    	return latitude.toString() + "," + longitude.toString();
     }
-    
-    public Double getLatitude()
-    {
-    	String[] latLon = location.split(",");
-    	if ( latLon.length > 0 )
-    	{
-    		return Double.parseDouble(latLon[0]);
-    	}
-    	
-    	return new Double(0.0);
-    }
-    
-    public Double getLongitude()
-    {
-    	String[] latLon = location.split(",");
-    	if ( latLon.length > 1 )
-    	{
-    		return Double.parseDouble(latLon[1]);
-    	}
-    	
-    	return new Double(0.0);
+
+    public void addHost(Host host) {
+        host.setLab(this);
+        hosts.add(host);
     }
 
     @JsonValue
@@ -89,7 +75,8 @@ public class Lab {
         model.put("id", getId());
         model.put("username", getUsername());
         model.put("name", getName());
-        model.put("location", getLocation());
+        model.put("latitude", getLatitude());
+        model.put("longitude", getLongitude());
         model.put("domainName", getDomainName());
         List<Long> hostIds = new ArrayList<Long>();
         for (Host host : hosts) {
@@ -98,4 +85,5 @@ public class Lab {
         model.put("hosts", hostIds);
         return model;
     }
+
 }

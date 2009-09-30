@@ -27,6 +27,7 @@ import jpl.simle.domain.Application;
 import jpl.simle.domain.Host;
 import jpl.simle.domain.HostApplication;
 import jpl.simle.domain.Lab;
+import jpl.simle.domain.Labs;
 import jpl.simle.domain.Protocol;
 import jpl.simle.domain.validator.LabValidator;
 
@@ -52,7 +53,7 @@ public class LabController {
 	{
 		List<Lab> labs = labManager_.findLabs();
 		
-		return new ModelAndView("lab/list", "labs", labs);
+		return new ModelAndView("lab/list", "labs", new Labs(labs));
 	}
 
     @RequestMapping(value="/lab/{labId}")

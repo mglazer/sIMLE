@@ -92,13 +92,10 @@ div .box {
 }
 #main {
   	margin:0 auto;
-  	position:relative;
-  	float:right;  	
+  	display: block;
   	top: 35px;
   	left:0px;
-  	width:550px;
-  	height:550px; 
-  	text-align:left;
+  	clear: both;
 }
 
 

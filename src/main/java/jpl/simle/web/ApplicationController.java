@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import jpl.simle.dao.LabManagerDAO;
 import jpl.simle.domain.Application;
+import jpl.simle.domain.Applications;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +30,7 @@ public class ApplicationController {
 	{
 		List<Application> applications = Application.findAllApplications();
 		
-		return new ModelAndView("/application/list", "applications", applications);
+		return new ModelAndView("/application/list", "applications", new Applications(applications));
 	}
 	
 	@RequestMapping(value="/application/new")

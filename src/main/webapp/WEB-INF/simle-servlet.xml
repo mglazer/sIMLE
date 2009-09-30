@@ -112,6 +112,8 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 				<value>jpl.simle.domain.Host</value>
 				<value>jpl.simle.domain.Lab</value>
 				<value>jpl.simle.domain.Protocol</value>
+				<value>jpl.simle.domain.Labs</value>
+				<value>jpl.simle.domain.Applications</value>
 			</util:list>
 		</property>
 	</bean>

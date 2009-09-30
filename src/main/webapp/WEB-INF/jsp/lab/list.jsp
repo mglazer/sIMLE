@@ -33,7 +33,7 @@
 			<tr>
 				<td>${lab.id}</td>
 				<td>${fn:substring(lab.name, 0, 10)}</td>
-				<td>${fn:substring(lab.location, 0, 10)}</td>
+				<td>${fn:substring(lab.latitude, 0, 5)},${fn:substring(lab.longitude, 0, 5)}</td>
 				<td><c:url value="/lab/${lab.id}" var="show_form_url" /> <c:url
 					value="/static/images/show.png" var="show_image_url" /> 
 					<form:form action="${show_form_url}" method="GET">

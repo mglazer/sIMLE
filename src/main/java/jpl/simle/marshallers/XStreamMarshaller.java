@@ -27,6 +27,7 @@ public class XStreamMarshaller extends
 
 	public void setAnnotatedClasses(List<Class> annotatedClasses) {
 		annotatedClasses_ = annotatedClasses;
+		customizeXStream(getXStream());
 	}
 
 

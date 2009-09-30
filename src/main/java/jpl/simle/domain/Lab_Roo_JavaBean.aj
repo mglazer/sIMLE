@@ -26,20 +26,28 @@ privileged aspect Lab_Roo_JavaBean {
         this.name = name;        
     }    
     
-    public java.lang.String Lab.getLocation() {    
-        return this.location;        
-    }    
-    
-    public void Lab.setLocation(java.lang.String location) {    
-        this.location = location;        
-    }    
-    
     public java.lang.String Lab.getDomainName() {    
         return this.domainName;        
     }    
     
     public void Lab.setDomainName(java.lang.String domainName) {    
         this.domainName = domainName;        
+    }    
+    
+    public java.lang.Double Lab.getLatitude() {    
+        return this.latitude;        
+    }    
+    
+    public void Lab.setLatitude(java.lang.Double latitude) {    
+        this.latitude = latitude;        
+    }    
+    
+    public java.lang.Double Lab.getLongitude() {    
+        return this.longitude;        
+    }    
+    
+    public void Lab.setLongitude(java.lang.Double longitude) {    
+        this.longitude = longitude;        
     }    
     
 }

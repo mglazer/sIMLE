@@ -10,6 +10,9 @@ import org.codehaus.jackson.annotate.JsonValue;
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import javax.validation.constraints.NotNull;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
@@ -31,6 +34,7 @@ import javax.persistence.CascadeType;
 @RooJavaBean
 @RooToString
 @RooEntity(finders = { "findHostsByLab" })
+@XStreamAlias("host")
 @JsonAutoDetect(JsonMethod.NONE)
 public class Host {
 
@@ -40,11 +44,14 @@ public class Host {
     private Lab lab;
 
     @NotNull
+    @XStreamAlias("name")
     private String name;
 
+    @XStreamAlias("dnsNames")
     private String dnsNames;
 
     @IPAddress
+    @XStreamAlias("addressIP")
     private String addressIP;
     
     @JsonValue
