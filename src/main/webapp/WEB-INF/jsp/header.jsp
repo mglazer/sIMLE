@@ -14,6 +14,7 @@
   <script type="text/javascript" src="<c:url value="/static/js/jquery-ui-1.7.custom.min.js"/>"></script>
   <script type="text/javascript" src="<c:url value="/static/js/jquery.form.js"/>"></script>
   <script type="text/javascript" src="<c:url value="/static/js/jquery.dataTables.min.js"/>"></script>
+  <script type="text/javascript" src="<c:url value="/static/js/jquery.tooltip.js"/>"></script>
   <script type="text/javascript" src="<c:url value="/static/js/simle.js"/>"></script>
   
   <title>sIMLE</title>	 

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import jpl.simle.dao.LabManagerDAO;
 import jpl.simle.domain.Protocol;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
@@ -45,13 +46,14 @@ public class ProtocolController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/application/{applicationId}/protocol")
-    public ModelAndView post(@PathVariable Long applicationId, Protocol protocol,
+    public ModelAndView create(@PathVariable Long applicationId, @RequestBody Protocol protocol,
     						 ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
     {
     	labManager_.saveProtocol(applicationId, protocol);
     	
     	if ( protocol.getId() != null )
     	{
+    		modelMap.put("protocol", protocol);
     		return new ModelAndView("redirect:/application/" + applicationId + "/protocol/" + protocol.getId());
     	}
     	else

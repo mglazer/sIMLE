@@ -53,8 +53,9 @@ public class TestUsers
 		protocol.setNetworkProtocol(Protocol.NetworkProtocol.UDP);
 		protocol.setApplicationProtocol("TENA");
 		protocol.setDirection(Protocol.Direction.BOTH);
-		protocol.setPorts("55100,55300,55900");
+		protocol.setPorts("55100,55300-55900/100");
 		protocol.setNotes("Only ports that are a multiple of 100 are assigned in the range of ports");
+		protocol.setDestinationIP("225.25.2.254");
 		
 		protocol.persist();
 		
@@ -65,6 +66,7 @@ public class TestUsers
 		protocol.setDirection(Protocol.Direction.BOTH);
 		protocol.setPorts("55802");
 		protocol.setNotes("Starship");
+		protocol.setDestinationIP("225.25.2.254");
 		
 		protocol.persist();
 		

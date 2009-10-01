@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,7 @@ import jpl.simle.domain.Labs;
 import jpl.simle.domain.Protocol;
 import jpl.simle.domain.validator.LabValidator;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
@@ -46,6 +49,8 @@ public class LabController {
 	private final static Namespace GEO_NAMESPACE = new Namespace("geo", "http://www.w3.org/2003/01/geo/wgs84_pos#");
 	
 	public final static String IML_CONTENT_TYPE = "application/xml+iml";
+	
+	private final static Logger logger_ = LoggerFactory.getLogger(LabController.class);
 	
 
 	@RequestMapping(value="/labs")
@@ -73,16 +78,18 @@ public class LabController {
     }
     
     @RequestMapping(value="/lab", method = RequestMethod.POST)
-    public ModelAndView create(Lab lab, HttpServletRequest request, HttpServletResponse response)
+    public ModelAndView create(@RequestBody Lab lab, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
     {
     	lab = getLabManagerDAO().saveLab(lab);
     	
     	if ( lab.getId() != null )
     	{
+    		modelMap.put("lab", lab);
     		return new ModelAndView("redirect:/lab/" + lab.getId());
     	}
     	else
     	{
+    		logger_.error("There was an error saving the model");
     		return new ModelAndView("/lab/new", "lab", lab);
     	}
     }
@@ -180,9 +187,9 @@ public class LabController {
 				Element useProtocolElement = appNode.addElement(imlQname("UseProtocol")).addAttribute(rdfQname("about"), resourceLink(protocol.getApplicationProtocol()));
 				Element linkElement = useProtocolElement.addElement(imlQname("MultiDirectionalLink")).addAttribute(rdfQname("about"), resourceLink(protocol.getNetworkProtocol()));
 				
-				for ( String port : protocol.getPortsList() )
+				for ( Integer port : protocol.getPortsList() )
 				{
-					linkElement.addElement(imlQname("PortNumber")).setText(port);
+					linkElement.addElement(imlQname("PortNumber")).setText(port.toString());
 				}
 			}
 		}

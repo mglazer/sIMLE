@@ -15,6 +15,7 @@ import jpl.simle.dao.LabManagerDAO;
 import jpl.simle.domain.Application;
 import jpl.simle.domain.Applications;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
@@ -60,7 +61,7 @@ public class ApplicationController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/application")
-    public ModelAndView post(Application application, HttpServletRequest request, HttpServletResponse response) 
+    public ModelAndView create(@RequestBody Application application, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
     {
     	logger_.info("Request to save application with name " + application.getName());
     	labManager_.saveApplication(application);
@@ -69,6 +70,7 @@ public class ApplicationController {
     	
     	if ( application.getId() != null )
     	{
+    		modelMap.put("application", application);
     		return new ModelAndView("redirect:/application/" + application.getId());
     	}
     	else

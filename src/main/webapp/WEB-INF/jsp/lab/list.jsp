@@ -41,14 +41,16 @@
 						type="image" value="Show lab" />
 					</form:form>
 				</td>
-				<td><c:url value="/lab/${lab.id}.iml" var="show_iml_url" />
+				<td><c:url value="/lab/${lab.id}.iml" var="show_iml_url">
+						<c:param name="pretty" value="true"/>
+					</c:url>
 					<c:url value="/static/images/iml.png" var="show_iml_image_url" />
 					<form:form action="${show_iml_url}" method="GET">
 					<input alt="Show IML" src="${show_iml_image_url}" title="Show IML" type="image" value="Show IML"/>
 					</form:form>
 				</td>
 				<td>
-					<c:url value="/lab/${lab.id}/edit" var="update_form_url" />
+					<c:url value="/lab/${lab.id}" var="update_form_url" />
 					<c:url value="/static/images/update.png" var="update_image_url" /> 
 					<form:form		action="${update_form_url}" method="GET">
 						<input alt="Update lab" src="${update_image_url}"

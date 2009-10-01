@@ -15,6 +15,7 @@ import jpl.simle.domain.Application;
 import jpl.simle.domain.Host;
 import jpl.simle.domain.HostApplication;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,15 +53,16 @@ public class HostController {
     }
     
 
-    @RequestMapping(method = RequestMethod.POST, value = "/lab/{labId}/host/")
-    public ModelAndView post(@PathVariable Long labId,
-    				 Host host,
+    @RequestMapping(method = RequestMethod.POST, value = "/lab/{labId}/host")
+    public ModelAndView create(@PathVariable Long labId,
+    				 @RequestBody Host host,
     			     ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
     {
     	host = labManager_.saveHost(labId, host);
     	
     	if ( host.getId() != null )
     	{
+    		modelMap.put("host", host);
     		return new ModelAndView("redirect:/lab/" + labId + "/host/" + host.getId());
     	}
     	else

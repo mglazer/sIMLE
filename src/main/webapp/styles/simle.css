@@ -48,8 +48,9 @@ input[type="text"], textarea{
 	border: 1px solid #CFDFCF;
 	color: #282828;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 14px;
-	padding: 3px;
+	font-size: 1.2em;
+	padding-left: 8px;
+	padding-top: 8px;
 }
 
 input[type="text"] {
@@ -293,23 +294,21 @@ fieldset dd {
 fieldset textfield {
 	margin: 3px;
 	height: 20px;
-	background: #FF7373;
 }
 
 fieldset textarea {
 	margin: 3px;
 	height: 165px;
-	background: #FF7373;
 }
 
 fieldset input {
 	margin: 3px;
+	padding: 3px;
 	height: 20px;
-	background: #FF7373;
+	font-size: 1.2em;
 }
 
 fieldset input.highlight, fieldset textarea.highlight {
-	background: #DFFF9F;
 	border: 1px solid #FF4040;
 }
 
@@ -431,9 +430,7 @@ form#login {
 	-moz-box-shadow:0 4px 18px #C8C8C8;
 	background:#FFFFFF none repeat scroll 0 0;
 	border:1px solid #E5E5E5;
-	margin-left:8px;
-	margin-right:100px;
-	margin-top:50px;
+	margin: auto auto;
 	padding:16px 16px 50px;
 	position:relative;
 	width:350px;
@@ -446,4 +443,13 @@ label#remember_me {
 
 #login #proceed {
 	margin-top: 2em;
+}
+
+#tooltip {
+	position: absolute;
+	z-index: 3000;
+	border: 1px solid #111;
+	border-color: #eee;
+	padding: 5px;
+	opacity: 0.85;
 }

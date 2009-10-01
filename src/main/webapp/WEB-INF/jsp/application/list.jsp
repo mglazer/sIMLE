@@ -28,7 +28,7 @@
 					</form:form>
 				</td>
 				<td>
-					<c:url value="/application/${application.id}/edit" var="update_form_url" />
+					<c:url value="/application/${application.id}" var="update_form_url" />
 					<c:url value="/static/images/update.png" var="update_image_url" /> 
 					<form:form		action="${update_form_url}" method="GET">
 						<input alt="Update application" src="${update_image_url}"

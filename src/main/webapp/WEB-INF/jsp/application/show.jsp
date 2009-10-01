@@ -57,6 +57,7 @@
 		}).blur(function() {
 			$(this).removeClass("highlight");
 		});
+		$("input").tooltip();
 	});
 
 </script>
@@ -95,7 +96,7 @@
 			<dd><label for="networkProtocol">Network Protocol:</label></dd>
 			<dt><input type="text" name="networkProtocol"/></dt>
 			<dd><label for="ports">Ports:</label></dd>
-			<dt><input type="text" name="ports"/></dt>
+			<dt><input id="ports" type="text" name="ports" title="Ports have the following syntax: 45,55,60-370/10,380-390 will include ports 45,55,60,70,80,90,...370,380,381,382,...390"/></dt>
 			<dd><label for="direction">Direction:</label></dd>
 			<dt><select name="direction">
 					<option value="In">In</option>

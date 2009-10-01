@@ -1,6 +1,8 @@
 package jpl.simle.domain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Entity;
@@ -66,16 +68,66 @@ public class Protocol {
     	this.direction = direction.toString();
     }
     
-    public String[] getPortsList()
+    public List<Integer> getPortsList()
     {
     	if ( ports == null )
     	{
-    		return new String[0];
+    		return new ArrayList<Integer>();
+    	}
+    	// first split up the ports list based on the commas
+    	List<Integer> portsList = new ArrayList<Integer>();
+    	String[] csvPorts = ports.split(",");
+    	
+    	for ( String ps : csvPorts )
+    	{
+    		portsList.addAll(parsePortRange(ps));
+    	}
+    	
+    	return portsList;
+    }
+    
+    private List<Integer> parsePortRange(String portRange)
+    {
+    	List<Integer> rval = new ArrayList<Integer>();
+    	if ( portRange.contains("-") )
+    	{
+    		// it's a range, check if there's a range mask
+    		int increment = 1;
+    		if ( portRange.contains("/") )
+    		{
+    			String[] rangeIncrement = portRange.split("/");
+    			
+    			portRange = rangeIncrement[0];
+    			increment = Integer.parseInt(rangeIncrement[1]);
+    			if ( increment <= 0 )
+    			{
+    				increment = 1;
+    			}
+    		}
+    		
+    		String[] startEnd = portRange.split("-");
+    		
+    		int start = Integer.parseInt(startEnd[0]);
+    		int end = Integer.parseInt(startEnd[1]);
+    		
+    		// if start is less than end, then we can perform the range
+    		// addition, otherwise we'll just add nothing because it's indeterminate
+    		// what the right move is
+    		if ( start < end )
+    		{
+    			while ( start <= end )
+    			{
+    				rval.add(new Integer(start));
+    				start += increment;
+    			}
+    		}
     	}
     	else
     	{
-    		return ports.split(",");
+    		rval.add(new Integer(portRange));
     	}
+    	
+    	return rval;
     }
     
     @JsonValue
