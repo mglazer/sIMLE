@@ -14,6 +14,8 @@ import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import jpl.simle.domain.Application;
 import jpl.simle.domain.validator.IPAddress;
 
@@ -26,6 +28,7 @@ import javax.persistence.JoinColumn;
 @RooToString
 @RooEntity(finders = { "findProtocolsByApplication" })
 @JsonAutoDetect(JsonMethod.NONE)
+@XStreamAlias("protocol")
 public class Protocol {
 
 	public enum NetworkProtocol {
