@@ -184,10 +184,15 @@ public class LabManagerDAO
 	
 	public HostApplication updateHostApplicationLink(HostApplication link, Application application, Host host)
 	{
+		if ( link.getId() == null )
+		{
+			throw new NoResultException("Host application link ID is null, cannot update it");
+		}
+			
 		link.setApplication(application);
 		link.setHost(host);
 		
-		link.persist();
+		link.merge();
 		
 		return link;
 	}
