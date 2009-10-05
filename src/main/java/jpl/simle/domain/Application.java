@@ -43,6 +43,17 @@ public class Application {
 
     private String addedByUsername;
     
+    public int hashCode()
+    {
+    	return name.hashCode();
+    }
+    
+    public boolean equals(Object other)
+    {
+    	Application app = (Application)other;
+    	return app.name.equals(this.name);
+    }
+    
     public void addProtocol(Protocol protocol)
     {
     	protocols.add(protocol);

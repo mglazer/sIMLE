@@ -61,7 +61,7 @@ public class ApplicationController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/application")
-    public ModelAndView create(@RequestBody Application application, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
+    public ModelAndView create(Application application, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
     {
     	logger_.info("Request to save application with name " + application.getName());
     	labManager_.saveApplication(application);

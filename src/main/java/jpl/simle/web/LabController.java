@@ -60,6 +60,15 @@ public class LabController {
 		
 		return new ModelAndView("lab/list", "labs", new Labs(labs));
 	}
+	
+    @RequestMapping(method = RequestMethod.GET, value="/lab/{labId}.xls")
+    public ModelAndView getXLS(@PathVariable Long labId, ModelMap modelMap, 
+    						   HttpServletRequest request, HttpServletResponse response) throws IOException
+    						   {
+    	Lab lab = labManager_.findLabById(labId);
+    	
+    	return new ModelAndView("labExcelView", "lab", lab);
+    						   }
 
     @RequestMapping(value="/lab/{labId}")
     public ModelAndView get(@PathVariable Long labId, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) throws IOException 
@@ -68,6 +77,7 @@ public class LabController {
     	
     	return new ModelAndView("lab/show", "lab", lab);
     }
+    
     
     @RequestMapping(value="/lab/new")
     public ModelAndView createNew(HttpServletRequest request, HttpServletResponse response)
@@ -78,7 +88,7 @@ public class LabController {
     }
     
     @RequestMapping(value="/lab", method = RequestMethod.POST)
-    public ModelAndView create(@RequestBody Lab lab, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
+    public ModelAndView create(Lab lab, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
     {
     	lab = getLabManagerDAO().saveLab(lab);
     	
@@ -93,7 +103,7 @@ public class LabController {
     		return new ModelAndView("/lab/new", "lab", lab);
     	}
     }
-
+    
     @RequestMapping(method = RequestMethod.PUT, value = "/lab/{labId}")
     public void update(@PathVariable Long labId, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) {
     }
@@ -163,7 +173,7 @@ public class LabController {
     	for ( Host host : lab.getHosts() )
     	{
     		Element nodeDevice = rdfRoot.addElement(imlQname("NodeDevice"));
-    		nodeDevice.addAttribute(imlQname("about"), host.getName().replace(' ', '_'));
+    		nodeDevice.addAttribute(imlQname("about"), resourceLink(host.getName()));
     		
     		nodeDevice.addElement(imlQname("name")).setText(host.getName());
     		nodeDevice.addElement(imlQname("locatedAt")).addAttribute(rdfQname("about"), resourceLink(lab.getDomainName()));
@@ -226,6 +236,6 @@ public class LabController {
 	
 	private String resourceLink(String name)
 	{
-		return "#" + name.replace("\\s", "_");
+		return "#" + name.replaceAll("\\s", "_");
 	}
 }

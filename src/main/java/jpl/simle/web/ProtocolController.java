@@ -46,7 +46,7 @@ public class ProtocolController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/application/{applicationId}/protocol")
-    public ModelAndView create(@PathVariable Long applicationId, @RequestBody Protocol protocol,
+    public ModelAndView create(@PathVariable Long applicationId, Protocol protocol,
     						 ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
     {
     	labManager_.saveProtocol(applicationId, protocol);

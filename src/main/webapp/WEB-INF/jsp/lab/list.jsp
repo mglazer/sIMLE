@@ -27,6 +27,7 @@
 			<th />
 			<th />
 			<th />
+			<th />
 		</thead>
 		</tr>
 		<c:forEach items="${labs}" var="lab">
@@ -39,6 +40,12 @@
 					<form:form action="${show_form_url}" method="GET">
 					<input alt="Show lab" src="${show_image_url}" title="Show lab"
 						type="image" value="Show lab" />
+					</form:form>
+				</td>
+				<td><c:url value="/lab/${lab.id}.xls" var="show_xls_url"/>
+					<c:url value="/static/images/file_xls.png" var="show_xls_image_url"/>
+					<form:form action="${show_xls_url}" method="GET">
+					<input alt="Show XLS" src="${show_xls_image_url}" title="Show XLS" type="image" value="Show XLS"/>
 					</form:form>
 				</td>
 				<td><c:url value="/lab/${lab.id}.iml" var="show_iml_url">

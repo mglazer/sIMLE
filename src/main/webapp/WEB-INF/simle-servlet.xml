@@ -29,7 +29,11 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 			</props>
 		</property>
 	</bean>
-	
+
+	<bean
+		class="org.springframework.web.servlet.view.BeanNameViewResolver"
+		p:order="0">
+	</bean>	
 		<!--
 		- This view resolver delegates to the InternalResourceViewResolver and
 		BeanNameViewResolver, and uses the requested media type to pick a
@@ -39,7 +43,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	-->
 	<bean
 		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver"
-		p:order="0">
+		p:order="1">
 		<property name="mediaTypes">
 			<map>
 				<entry key="xml" value="#{xmlView.contentType}" />
@@ -63,21 +67,24 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		negotiating view resolver
 	-->
 	<bean id="xmlViewResolver" class="jpl.simle.web.resolvers.StaticViewResolver"
-		p:order="1">
+		p:order="2">
 		<property name="view" ref="xmlView"/>
 	</bean>
 	
 	<bean id="jsonViewResolver" class="jpl.simle.web.resolvers.StaticViewResolver"
-		p:order="2">
+		p:order="3">
 		<property name="view" ref="jsonView"/>	
 	</bean>
-
+	
 	<bean id="xmlView" class="org.springframework.web.servlet.view.xml.MarshallingView">
 		<property name="marshaller" ref="xstreamMarshaller"/>
 	</bean>
 	
 	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
 	
+	</bean>
+	
+	<bean id="labExcelView" class="jpl.simle.excel.LabExcelView">
 	</bean>
 	<!-- Enable the marshallers -->
 	
@@ -86,10 +93,14 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		<property name="messageConverters">
 			<util:list id="beanList">
 				<ref bean="stringHttpMessageConverter" />
+				<ref bean="formHttpMessageConverter" />
 				<ref bean="marshallingHttpMessageConverter" />
 			</util:list>
 		</property>
 	</bean>
+	
+	<bean id="formHttpMessageConverter"
+		class="org.springframework.http.converter.FormHttpMessageConverter" />
 
 	<bean id="stringHttpMessageConverter"
 		class="org.springframework.http.converter.StringHttpMessageConverter" />
@@ -124,7 +135,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		- returned by Controllers. For example, a logical view name of "vets" 
 		- will be mapped to "/WEB-INF/jsp/vets.jsp".
 	-->
-	<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" p:order="3"/>
+	<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" p:order="4"/>
 
 	<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver"/>
 	

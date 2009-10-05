@@ -241,9 +241,14 @@ public class LabManagerDAO
 	{
 		Application app = findApplication(appId);
 		
+		return saveProtocol(app, protocol);
+	}
+	
+	public Protocol saveProtocol(Application app, Protocol protocol)
+	{
 		if ( app == null )
 		{
-			throw new NoResultException("No protocol found with id " + appId);
+			throw new NoResultException("Application was null, please make sure that it is not");
 		}
 		
 		app.addProtocol(protocol);
@@ -269,6 +274,11 @@ public class LabManagerDAO
 	public void setAuthenticationDAO(AuthenticationDAO authenticationDAO)
 	{
 		authenticationDAO_ = authenticationDAO;
+	}
+	
+	public AuthenticationDAO getAuthenticationDAO()
+	{
+		return authenticationDAO_;
 	}
 
 

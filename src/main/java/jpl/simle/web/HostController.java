@@ -55,7 +55,7 @@ public class HostController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/lab/{labId}/host")
     public ModelAndView create(@PathVariable Long labId,
-    				 @RequestBody Host host,
+    				 Host host,
     			     ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
     {
     	host = labManager_.saveHost(labId, host);
