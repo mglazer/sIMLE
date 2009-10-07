@@ -53,7 +53,7 @@ public class HostController {
     	return new ModelAndView("/host/new", "host", host);
     }
     
-    @RequestMapping(method = RequestMethod.POST, value="/lab/{labId}/host", headers={"content-type=application/xml"})
+    @RequestMapping(method = RequestMethod.POST, value="/lab/{labId}/host", headers={"Content-Type=application/xml"})
     public String createXML(@PathVariable Long labId, @RequestBody Host host, ModelMap modelMap,
     						HttpServletRequest request, HttpServletResponse response)
     throws IOException

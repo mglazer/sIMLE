@@ -61,7 +61,7 @@ public class ApplicationController {
     	return new ModelAndView("/application/show", "application", Application.findApplication(applicationId));
     }
     
-    @RequestMapping(method = RequestMethod.POST, value="/application", headers={"content-type=application/xml"})
+    @RequestMapping(method = RequestMethod.POST, value="/application", headers={"Content-Type=application/xml"})
     public String createXML(@RequestBody Application application, ModelMap modelMap, 
     					  HttpServletRequest request, HttpServletResponse response)
     throws IOException

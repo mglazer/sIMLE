@@ -6,14 +6,6 @@ import jpl.simle.domain.SIMLEGroup;
 
 privileged aspect SIMLEUser_Roo_JavaBean {
     
-    public String SIMLEUser.getUsername() {    
-        return this.username;        
-    }    
-    
-    public void SIMLEUser.setUsername(String username) {    
-        this.username = username;        
-    }    
-    
     public String SIMLEUser.getPassword() {    
         return this.password;        
     }    

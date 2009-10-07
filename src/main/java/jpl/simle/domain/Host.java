@@ -14,6 +14,9 @@ import org.springframework.roo.addon.tostring.RooToString;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import javax.validation.constraints.NotNull;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 
@@ -37,6 +40,10 @@ import javax.persistence.CascadeType;
 @XStreamAlias("host")
 @JsonAutoDetect(JsonMethod.NONE)
 public class Host {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
     @NotNull
     @ManyToOne(targetEntity = Lab.class)
@@ -69,5 +76,13 @@ public class Host {
     	
     	return model; 
     }
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getId() {
+		return id;
+	}
     
 }

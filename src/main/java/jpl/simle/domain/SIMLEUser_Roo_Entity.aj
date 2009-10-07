@@ -1,13 +1,10 @@
 package jpl.simle.domain;
 
 import java.lang.Integer;
-import java.lang.Long;
+import java.lang.String;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Version;
 import jpl.simle.domain.SIMLEUser;
@@ -18,22 +15,9 @@ privileged aspect SIMLEUser_Roo_Entity {
     @PersistenceContext    
     transient EntityManager SIMLEUser.entityManager;    
     
-    @Id    
-    @GeneratedValue(strategy = GenerationType.AUTO)    
-    @Column(name = "id")    
-    private Long SIMLEUser.id;    
-    
     @Version    
     @Column(name = "version")    
     private Integer SIMLEUser.version;    
-    
-    public Long SIMLEUser.getId() {    
-        return this.id;        
-    }    
-    
-    public void SIMLEUser.setId(Long id) {    
-        this.id = id;        
-    }    
     
     public Integer SIMLEUser.getVersion() {    
         return this.version;        
@@ -55,7 +39,7 @@ privileged aspect SIMLEUser_Roo_Entity {
         if (this.entityManager.contains(this)) {        
             this.entityManager.remove(this);            
         } else {        
-            SIMLEUser attached = this.entityManager.find(SIMLEUser.class, this.id);            
+            SIMLEUser attached = this.entityManager.find(SIMLEUser.class, this.username);            
             this.entityManager.remove(attached);            
         }        
     }    
@@ -71,7 +55,7 @@ privileged aspect SIMLEUser_Roo_Entity {
         if (this.entityManager == null) this.entityManager = entityManager();        
         SIMLEUser merged = this.entityManager.merge(this);        
         this.entityManager.flush();        
-        this.id = merged.getId();        
+        this.username = merged.getUsername();        
     }    
     
     public static EntityManager SIMLEUser.entityManager() {    
@@ -88,7 +72,7 @@ privileged aspect SIMLEUser_Roo_Entity {
         return entityManager().createQuery("select o from SIMLEUser o").getResultList();        
     }    
     
-    public static SIMLEUser SIMLEUser.findSIMLEUser(Long id) {    
+    public static SIMLEUser SIMLEUser.findSIMLEUser(String id) {    
         if (id == null) throw new IllegalArgumentException("An identifier is required to retrieve an instance of SIMLEUser");        
         return entityManager().find(SIMLEUser.class, id);        
     }    

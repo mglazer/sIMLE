@@ -5,9 +5,6 @@ import java.lang.Long;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Version;
 import jpl.simle.domain.Lab;
@@ -18,22 +15,9 @@ privileged aspect Lab_Roo_Entity {
     @PersistenceContext    
     transient EntityManager Lab.entityManager;    
     
-    @Id    
-    @GeneratedValue(strategy = GenerationType.AUTO)    
-    @Column(name = "id")    
-    private Long Lab.id;    
-    
     @Version    
     @Column(name = "version")    
     private Integer Lab.version;    
-    
-    public Long Lab.getId() {    
-        return this.id;        
-    }    
-    
-    public void Lab.setId(Long id) {    
-        this.id = id;        
-    }    
     
     public Integer Lab.getVersion() {    
         return this.version;        

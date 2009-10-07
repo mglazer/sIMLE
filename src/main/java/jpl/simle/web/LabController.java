@@ -32,6 +32,7 @@ import jpl.simle.domain.Labs;
 import jpl.simle.domain.Protocol;
 import jpl.simle.service.LabManagerService;
 
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -86,7 +87,7 @@ public class LabController {
     	return new ModelAndView("lab/new", "lab", lab);
     }
     
-    @RequestMapping(value="/lab", method = RequestMethod.POST, headers={"content-type:application/xml"})
+    @RequestMapping(value="/lab", method = RequestMethod.POST, headers={"Content-Type=application/xml"})
     public String createXML(@RequestBody Lab lab, ModelMap modelMap, 
     						HttpServletRequest request, HttpServletResponse response)
     throws IOException
@@ -106,7 +107,7 @@ public class LabController {
     }
     
     @RequestMapping(value="/lab", method = RequestMethod.POST)
-    public ModelAndView create(Lab lab, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
+    public ModelAndView create(@ModelAttribute("lab") Lab lab, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
     {
     	lab = getLabManagerDAO().saveLab(lab);
     	

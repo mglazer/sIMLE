@@ -12,6 +12,9 @@ import org.springframework.roo.addon.tostring.RooToString;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import javax.validation.constraints.NotNull;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 
@@ -34,6 +37,10 @@ import javax.persistence.CascadeType;
 @XStreamAlias("application")
 public class Application {
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private Long id;
+	
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "application")
     private Set<Protocol> protocols = new HashSet<Protocol>();
 
@@ -80,4 +87,12 @@ public class Application {
     	
     	return model;
     }
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 }

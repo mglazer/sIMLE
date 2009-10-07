@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -29,6 +30,7 @@ public class SIMLEUser {
 
     @NotNull
     @Column(name = "username")
+    @Id
     private String username;
 
     @NotNull
@@ -47,4 +49,16 @@ public class SIMLEUser {
     {
     	return (SIMLEUser)SIMLEUser.findSIMLEUsersByUsernameEquals(username).getSingleResult();
     }
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	public String getId() {
+		return username;
+	}
 }

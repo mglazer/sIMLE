@@ -46,7 +46,7 @@ public class ProtocolController {
     	return new ModelAndView("/protocol/show", "protocol", protocol);
     }
     
-    @RequestMapping(method = RequestMethod.POST, value = "/application/{applicationId}/protocol", headers={"content-type:application/xml"})
+    @RequestMapping(method = RequestMethod.POST, value = "/application/{applicationId}/protocol", headers={"Content-Type:application/xml"})
     public String createXML(@PathVariable Long applicationId, @RequestBody Protocol protocol, 
     					 ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
     throws IOException

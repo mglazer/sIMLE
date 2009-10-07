@@ -5,9 +5,6 @@ import java.lang.Long;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Version;
 import jpl.simle.domain.Host;
@@ -18,22 +15,9 @@ privileged aspect Host_Roo_Entity {
     @PersistenceContext    
     transient EntityManager Host.entityManager;    
     
-    @Id    
-    @GeneratedValue(strategy = GenerationType.AUTO)    
-    @Column(name = "id")    
-    private Long Host.id;    
-    
     @Version    
     @Column(name = "version")    
     private Integer Host.version;    
-    
-    public Long Host.getId() {    
-        return this.id;        
-    }    
-    
-    public void Host.setId(Long id) {    
-        this.id = id;        
-    }    
     
     public Integer Host.getVersion() {    
         return this.version;        

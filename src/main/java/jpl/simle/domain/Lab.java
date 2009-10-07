@@ -21,6 +21,10 @@ import java.util.Map;
 import java.util.Set;
 import jpl.simle.domain.Host;
 import java.util.HashSet;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
@@ -37,6 +41,11 @@ import javax.validation.constraints.Pattern;
 @RooEntity(finders = { "findLabsByNameEquals", "findLabsByGroupNameEquals" })
 public class Lab {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@XStreamAlias("id")
+	private Long id;
+	
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lab")
     @XStreamAlias("hosts")
     private Set<Host> hosts = new HashSet<Host>();
@@ -54,9 +63,11 @@ public class Lab {
     private String domainName;
 
     @NotNull
+    @XStreamAlias("latitude")
     private Double latitude;
 
     @NotNull
+    @XStreamAlias("longitude")
     private Double longitude;
 
     public String getLocation() {
@@ -93,4 +104,13 @@ public class Lab {
         model.put("hosts", hostIds);
         return model;
     }
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
 }
