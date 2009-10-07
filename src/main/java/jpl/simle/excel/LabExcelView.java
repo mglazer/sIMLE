@@ -8,12 +8,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import jpl.simle.dao.LabManagerDAO;
 import jpl.simle.domain.Host;
 import jpl.simle.domain.Lab;
 import jpl.simle.domain.Application;
 import jpl.simle.domain.HostApplication;
 import jpl.simle.domain.Protocol;
+import jpl.simle.service.LabManagerService;
 
 import jxl.SheetSettings;
 import jxl.format.BoldStyle;
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class LabExcelView extends AbstractJExcelView 
 {
-	private LabManagerDAO labManager_;
+	private LabManagerService labManager_;
 	private final static Logger logger_ = LoggerFactory.getLogger(LabExcelView.class);
 	
 	private static class ExcelHeader {
@@ -236,7 +236,7 @@ public class LabExcelView extends AbstractJExcelView
 	}
 	
 	@Autowired
-	public void setLabManagerDAO(LabManagerDAO labManagerDAO)
+	public void setLabManagerDAO(LabManagerService labManagerDAO)
 	{
 		labManager_ = labManagerDAO;
 	}

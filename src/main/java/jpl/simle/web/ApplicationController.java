@@ -1,5 +1,6 @@
 package jpl.simle.web;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,9 +12,9 @@ import org.springframework.ui.ModelMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jpl.simle.dao.LabManagerDAO;
 import jpl.simle.domain.Application;
 import jpl.simle.domain.Applications;
+import jpl.simle.service.LabManagerService;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ApplicationController {
 	
-	private LabManagerDAO labManager_;
+	private LabManagerService labManager_;
 	private final Logger logger_ = LoggerFactory.getLogger(getClass());
 	
 	@RequestMapping(value="/applications")
@@ -59,6 +60,26 @@ public class ApplicationController {
     {
     	return new ModelAndView("/application/show", "application", Application.findApplication(applicationId));
     }
+    
+    @RequestMapping(method = RequestMethod.POST, value="/application", headers={"content-type=application/xml"})
+    public String createXML(@RequestBody Application application, ModelMap modelMap, 
+    					  HttpServletRequest request, HttpServletResponse response)
+    throws IOException
+    {
+    	labManager_.saveApplication(application);
+    	
+    	if ( application.getId() != null )
+    	{
+    		modelMap.put("application", application);
+    		return "redirect:/application/" + application.getId();
+    	}
+    	else
+    	{
+    		modelMap.put("errors", "Could not save application");
+    		response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Could not save application");
+    		return "error";
+    	}
+    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/application")
     public ModelAndView create(Application application, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
@@ -80,8 +101,9 @@ public class ApplicationController {
     }
     
     
+    
     @Autowired
-    public void setLabManagerDAO(LabManagerDAO labManagerDAO)
+    public void setLabManagerDAO(LabManagerService labManagerDAO)
     {
     	labManager_ = labManagerDAO;
     }

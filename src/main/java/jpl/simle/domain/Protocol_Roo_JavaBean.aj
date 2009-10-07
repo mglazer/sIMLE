@@ -1,60 +1,63 @@
 package jpl.simle.domain;
 
+import java.lang.String;
+import jpl.simle.domain.Application;
+
 privileged aspect Protocol_Roo_JavaBean {
     
-    public jpl.simle.domain.Application Protocol.getApplication() {    
+    public Application Protocol.getApplication() {    
         return this.application;        
     }    
     
-    public void Protocol.setApplication(jpl.simle.domain.Application application) {    
+    public void Protocol.setApplication(Application application) {    
         this.application = application;        
     }    
     
-    public java.lang.String Protocol.getDestinationIP() {    
+    public String Protocol.getDestinationIP() {    
         return this.destinationIP;        
     }    
     
-    public void Protocol.setDestinationIP(java.lang.String destinationIP) {    
+    public void Protocol.setDestinationIP(String destinationIP) {    
         this.destinationIP = destinationIP;        
     }    
     
-    public java.lang.String Protocol.getDirection() {    
+    public String Protocol.getDirection() {    
         return this.direction;        
     }    
     
-    public void Protocol.setDirection(java.lang.String direction) {    
+    public void Protocol.setDirection(String direction) {    
         this.direction = direction;        
     }    
     
-    public java.lang.String Protocol.getPorts() {    
+    public String Protocol.getPorts() {    
         return this.ports;        
     }    
     
-    public void Protocol.setPorts(java.lang.String ports) {    
+    public void Protocol.setPorts(String ports) {    
         this.ports = ports;        
     }    
     
-    public java.lang.String Protocol.getNetworkProtocol() {    
+    public String Protocol.getNetworkProtocol() {    
         return this.networkProtocol;        
     }    
     
-    public void Protocol.setNetworkProtocol(java.lang.String networkProtocol) {    
+    public void Protocol.setNetworkProtocol(String networkProtocol) {    
         this.networkProtocol = networkProtocol;        
     }    
     
-    public java.lang.String Protocol.getApplicationProtocol() {    
+    public String Protocol.getApplicationProtocol() {    
         return this.applicationProtocol;        
     }    
     
-    public void Protocol.setApplicationProtocol(java.lang.String applicationProtocol) {    
+    public void Protocol.setApplicationProtocol(String applicationProtocol) {    
         this.applicationProtocol = applicationProtocol;        
     }    
     
-    public java.lang.String Protocol.getNotes() {    
+    public String Protocol.getNotes() {    
         return this.notes;        
     }    
     
-    public void Protocol.setNotes(java.lang.String notes) {    
+    public void Protocol.setNotes(String notes) {    
         this.notes = notes;        
     }    
     

@@ -34,7 +34,8 @@
 		
 		row.appendChild(selectCol);
 		row.appendChild(descCol);
-		
+
+		<security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
 		var selectBox = $("<select></select>");
 		jQuery.each(applications, function() {
 			// sanity check to make sure we're not adding in undefined values
@@ -47,13 +48,20 @@
 		});
 
 		$(selectCol).append($(selectBox));
-		
-		$(parent).append($(row));
+
 		$(selectBox).change(function() {
 			applicationChangedForHost($(descCol), linkId, $(this).find("option:selected").val(), hostId); 
 		});
+		</security:authorize>
 
-		applicationChangedForHost($(descCol), linkId, $(selectBox).find("option:selected").val(), hostId);
+		<security:authorize ifNotGranted="ROLE_GROUP_ADMIN">
+		var applicationContainer = $("<span class='application-name'>" + applications_g[selectedApplication].name + "</span>");
+		$(selectCol).append($(applicationContainer));
+		</security:authorize>
+		
+		$(parent).append($(row));
+
+		//applicationChangedForHost($(descCol), linkId, $(selectBox).find("option:selected").val(), hostId);
 	}
 
 	function addApplication(parent, hostId, linkId, appId)
@@ -90,14 +98,18 @@
 
 		$(applicationColumn).append($(applicationsTable));
 		applicationRow.appendChild(applicationColumn);
-		
+
+		<security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
 		var addApplicationButton = $('<input type="button" value="Add Application" class="add"/>').click(function() {
 			addApplication(applicationsBody, host.id);
 		});
+		
 
 		var addApplicationColumn = document.createElement("td");
 		$(addApplicationColumn).append($(addApplicationButton));
+		
 	 	$(addApplicationColumn).appendTo($(newRow));
+	 	</security:authorize>
 		
 		$("#hostTable > tbody").append($(newRow));
 		$("#hostTable > tbody").append($(applicationRow));	
@@ -117,7 +129,6 @@
 
 	function hostsReceived(data) {
 		$("#hostTable tbody").html("");
-		console.log(data);
 		data = evalJSON(data);
 		jQuery.each(data.hosts, function() {
 			addHost(this);
@@ -149,7 +160,7 @@
 <div style="width: 100%" title="Show Lab">
 
 <c:if test="${not empty lab}">
-	<h2>${lab.name} at ${lab.location} for ${lab.username}</h2>
+	<h2>${lab.name}</h2>
 	
 	<table id="hostTable" class="dataTable">
 	<thead>
@@ -168,6 +179,7 @@
 	</tbody>
 	</table>
 	
+	<security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
 	<fieldset>
 	<legend>Add Host</legend>
 	<c:url value="/lab/${lab.id}/host/" var="create_host_url"/>
@@ -185,6 +197,7 @@
 		</div>
 	</form> 
 	</fieldset>
+	</security:authorize>
 		
 </c:if>
 <c:if test="${empty lab}">No lab found with this id.</c:if>

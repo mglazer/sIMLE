@@ -7,7 +7,6 @@ import org.codehaus.jackson.annotate.JsonValue;
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
-import org.springframework.security.userdetails.UserDetails;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.Converter;
@@ -26,15 +25,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Query;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Entity
 @RooJavaBean
 @RooToString
-@RooEntity(finders = { "findLabsByNameEquals", "findLabsByUsernameEquals" })
 @XStreamAlias("lab")
 @JsonAutoDetect(JsonMethod.NONE)
+@RooEntity(finders = { "findLabsByNameEquals", "findLabsByGroupNameEquals" })
 public class Lab {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lab")
@@ -42,8 +42,8 @@ public class Lab {
     private Set<Host> hosts = new HashSet<Host>();
 
     @NotNull
-    @XStreamAlias("username")
-    private String username;
+    @XStreamAlias("groupName")
+    private String groupName;
 
     @NotNull
     @XStreamAlias("name")
@@ -58,22 +58,30 @@ public class Lab {
 
     @NotNull
     private Double longitude;
-    
-    public String getLocation()
-    {
-    	return latitude.toString() + "," + longitude.toString();
+
+    public String getLocation() {
+        return latitude.toString() + "," + longitude.toString();
     }
 
     public void addHost(Host host) {
         host.setLab(this);
         hosts.add(host);
     }
+    
+    public static Lab findLabByIdAndGroupname(Long id, String groupName)
+    {
+    	Query query = entityManager().createQuery("SELECT Lab from Lab AS lab WHERE lab.id = :id AND lab.groupName = :groupName");
+    	query.setParameter("id", id);
+    	query.setParameter("groupName", groupName);
+    	
+    	return (Lab)query.getSingleResult();
+    }
 
     @JsonValue
     public Map<String, Object> toJSON() {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("id", getId());
-        model.put("username", getUsername());
+        model.put("groupName", getGroupName());
         model.put("name", getName());
         model.put("latitude", getLatitude());
         model.put("longitude", getLongitude());
@@ -85,5 +93,4 @@ public class Lab {
         model.put("hosts", hostIds);
         return model;
     }
-
 }

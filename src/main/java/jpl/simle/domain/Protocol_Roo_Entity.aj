@@ -1,42 +1,55 @@
 package jpl.simle.domain;
 
+import java.lang.Integer;
+import java.lang.Long;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Version;
+import jpl.simle.domain.Protocol;
+import org.springframework.transaction.annotation.Transactional;
+
 privileged aspect Protocol_Roo_Entity {
     
-    @javax.persistence.PersistenceContext    
-    transient javax.persistence.EntityManager Protocol.entityManager;    
+    @PersistenceContext    
+    transient EntityManager Protocol.entityManager;    
     
-    @javax.persistence.Id    
-    @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)    
-    @javax.persistence.Column(name = "id")    
-    private java.lang.Long Protocol.id;    
+    @Id    
+    @GeneratedValue(strategy = GenerationType.AUTO)    
+    @Column(name = "id")    
+    private Long Protocol.id;    
     
-    @javax.persistence.Version    
-    @javax.persistence.Column(name = "version")    
-    private java.lang.Integer Protocol.version;    
+    @Version    
+    @Column(name = "version")    
+    private Integer Protocol.version;    
     
-    public java.lang.Long Protocol.getId() {    
+    public Long Protocol.getId() {    
         return this.id;        
     }    
     
-    public void Protocol.setId(java.lang.Long id) {    
+    public void Protocol.setId(Long id) {    
         this.id = id;        
     }    
     
-    public java.lang.Integer Protocol.getVersion() {    
+    public Integer Protocol.getVersion() {    
         return this.version;        
     }    
     
-    public void Protocol.setVersion(java.lang.Integer version) {    
+    public void Protocol.setVersion(Integer version) {    
         this.version = version;        
     }    
     
-    @org.springframework.transaction.annotation.Transactional    
+    @Transactional    
     public void Protocol.persist() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.persist(this);        
     }    
     
-    @org.springframework.transaction.annotation.Transactional    
+    @Transactional    
     public void Protocol.remove() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         if (this.entityManager.contains(this)) {        
@@ -47,13 +60,13 @@ privileged aspect Protocol_Roo_Entity {
         }        
     }    
     
-    @org.springframework.transaction.annotation.Transactional    
+    @Transactional    
     public void Protocol.flush() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.flush();        
     }    
     
-    @org.springframework.transaction.annotation.Transactional    
+    @Transactional    
     public void Protocol.merge() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         Protocol merged = this.entityManager.merge(this);        
@@ -61,8 +74,8 @@ privileged aspect Protocol_Roo_Entity {
         this.id = merged.getId();        
     }    
     
-    public static javax.persistence.EntityManager Protocol.entityManager() {    
-        javax.persistence.EntityManager em = new Protocol().entityManager;        
+    public static EntityManager Protocol.entityManager() {    
+        EntityManager em = new Protocol().entityManager;        
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");        
         return em;        
     }    
@@ -71,16 +84,16 @@ privileged aspect Protocol_Roo_Entity {
         return (Long) entityManager().createQuery("select count(o) from Protocol o").getSingleResult();        
     }    
     
-    public static java.util.List<jpl.simle.domain.Protocol> Protocol.findAllProtocols() {    
+    public static List<Protocol> Protocol.findAllProtocols() {    
         return entityManager().createQuery("select o from Protocol o").getResultList();        
     }    
     
-    public static jpl.simle.domain.Protocol Protocol.findProtocol(java.lang.Long id) {    
+    public static Protocol Protocol.findProtocol(Long id) {    
         if (id == null) throw new IllegalArgumentException("An identifier is required to retrieve an instance of Protocol");        
         return entityManager().find(Protocol.class, id);        
     }    
     
-    public static java.util.List<jpl.simle.domain.Protocol> Protocol.findProtocolEntries(int firstResult, int maxResults) {    
+    public static List<Protocol> Protocol.findProtocolEntries(int firstResult, int maxResults) {    
         return entityManager().createQuery("select o from Protocol o").setFirstResult(firstResult).setMaxResults(maxResults).getResultList();        
     }    
     

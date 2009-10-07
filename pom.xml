@@ -170,11 +170,7 @@
 </exclusion>
 </exclusions>
 </dependency>
-<dependency>
-<groupId>javax.validation</groupId>
-<artifactId>com.springsource.javax.validation</artifactId>
-<version>1.0.0.CR1</version>
-</dependency>
+
 <dependency>
 <groupId>javax.transaction</groupId>
 <artifactId>com.springsource.javax.transaction</artifactId>
@@ -237,13 +233,13 @@
 </dependency>
 <dependency>
 <groupId>org.springframework.security</groupId>
-<artifactId>org.springframework.security</artifactId>
-<version>2.0.4.A</version>
+<artifactId>spring-security-core</artifactId>
+<version>${spring.security.version}</version>
 </dependency>
 <dependency>
     <groupId>org.springframework.security</groupId>
-    <artifactId>org.springframework.security.taglibs</artifactId>
-    <version>2.0.5.RELEASE</version>
+    <artifactId>spring-security-taglibs</artifactId>
+    <version>${spring.security.version}</version>
 </dependency>
     <dependency>
     	<groupId>com.thoughtworks.xstream</groupId>
@@ -274,6 +270,16 @@
 	<groupId>net.sourceforge.jexcelapi</groupId>
 	<artifactId>jxl</artifactId>
 	<version>2.6.10</version>
+</dependency>
+<dependency>
+	<groupId>org.springframework.security</groupId>
+	<artifactId>spring-security-config</artifactId>
+	<version>${spring.security.version}</version>
+</dependency>
+<dependency>
+<groupId>javax.validation</groupId>
+<artifactId>com.springsource.javax.validation</artifactId>
+<version>1.0.0.CR3</version>
 </dependency>
 </dependencies>
 
@@ -478,6 +484,7 @@
 	<properties>
 		<spring.version>3.0.0.RC1</spring.version>
 		<aspectj.version>1.6.3.RELEASE</aspectj.version>
+		<spring.security.version>3.0.0.M2</spring.security.version>
 	</properties>
 
 </project>

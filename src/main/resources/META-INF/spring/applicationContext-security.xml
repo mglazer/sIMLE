@@ -4,8 +4,10 @@
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
+	<global-method-security pre-post-annotations="enabled" />
+	
     <http auto-config="true">
     	<form-login login-processing-url="/static/j_spring_security_check" 
     				login-page="/static/login.jsp" 
@@ -23,18 +25,20 @@
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_REMEMBERED" />
     </http>
 
-    <authentication-provider>
-    	<password-encoder hash="sha-256"/>
-    	<jdbc-user-service data-source-ref="dataSource"/>
-    	<!-- SHA-256 values can be produced using 'echo -n your_desired_password | sha256sum' (using normal *nix environments) -->
-    	<!-- 
-    	<password-encoder hash="sha-256"/>
-        <user-service>
-            <user name="admin" password="8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918" authorities="ROLE_ADMIN"/>
-	        <user name="user" password="5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8" authorities="ROLE_USER"/>
-	    </user-service>
-	    -->
-	</authentication-provider>
+	<authentication-manager>
+	    <authentication-provider>
+	    	<password-encoder hash="sha-256"/>
+	    	<jdbc-user-service data-source-ref="dataSource"/>
+	    	<!-- SHA-256 values can be produced using 'echo -n your_desired_password | sha256sum' (using normal *nix environments) -->
+	    	<!-- 
+	    	<password-encoder hash="sha-256"/>
+	        <user-service>
+	            <user name="admin" password="8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918" authorities="ROLE_ADMIN"/>
+		        <user name="user" password="5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8" authorities="ROLE_USER"/>
+		    </user-service>
+		    -->
+		</authentication-provider>
+	</authentication-manager>
 	
 
 </beans:beans>

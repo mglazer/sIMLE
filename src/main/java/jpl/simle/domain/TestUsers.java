@@ -1,8 +1,11 @@
 package jpl.simle.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import jpl.simle.dao.LabManagerDAO;
 
 import jpl.simle.domain.Protocol.Direction;
 import jpl.simle.domain.Protocol.NetworkProtocol;
@@ -10,12 +13,13 @@ import jpl.simle.domain.Protocol.NetworkProtocol;
 import java.util.Map;
 import java.util.HashMap;
 
-import jpl.simle.dao.AuthenticationDAO;
+import jpl.simle.service.LabManagerService;
+import jpl.simle.service.impl.AuthenticationServiceImpl;
 
 public class TestUsers 
 {
 	@Autowired
-	private LabManagerDAO labManager;
+	private LabManagerService labManager;
 	
 	private Map<String,Application> applications = new HashMap<String,Application>();
 	
@@ -49,29 +53,47 @@ public class TestUsers
 	public void init() throws Exception
 	{
 		SIMLEUser user = new SIMLEUser();
-		user.setUsername("user");
+		user.setUsername("itecuser");
 		user.setPassword("5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8");
 		user.setEnabled(true);
 		
+		SIMLEGroup group = new SIMLEGroup();
+		group.setGroupName("itec");
+		
+		group.persist();
+		
+		user.setGroup(group);
+		
 		Authority roleUser = new Authority();
-		roleUser.setUsername("user");
+		roleUser.setUsername(user.getUsername());
 		roleUser.setAuthority("ROLE_USER");
 		
 		user.persist();
 		roleUser.persist();
 		
-		// temporarily swap in a mock authentication manager
-		AuthenticationDAO backupAuthentication = labManager.getAuthenticationDAO();
-		labManager.setAuthenticationDAO(new AuthenticationDAO() {
-			public String getAuthenticatedUsername() {
-				return "user";
-			}
-		});
+		SIMLEUser adminUser = new SIMLEUser();
+		adminUser.setUsername("itecadmin");
+		adminUser.setPassword("5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8");
+		adminUser.setEnabled(true);
+		
+		group = SIMLEGroup.findSIMLEGroup(group.getId());
+		adminUser.setGroup(group);
+		
+		Authority roleGroupAdmin = new Authority();
+		roleGroupAdmin.setUsername(adminUser.getUsername());
+		roleGroupAdmin.setAuthority("ROLE_GROUP_ADMIN");
+		
+		adminUser.persist();
+		roleGroupAdmin.persist();
+		
+		// setup an authentication context temporarily
+		Authentication authRequest = new UsernamePasswordAuthenticationToken("user", "password", AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
+		SecurityContextHolder.getContext().setAuthentication(authRequest);
 
 		// create a new lab for testing
 		Lab lab = new Lab();
 		lab.setName("ITEC");
-		lab.setUsername(user.getUsername());
+		lab.setGroupName(group.getGroupName());
 		lab.setLatitude(new Double(34.1205));
 		lab.setLongitude(new Double(119.1035));
 		lab.setDomainName("domain.itec.com");
@@ -97,8 +119,8 @@ public class TestUsers
 		}
 
 		
-		// restore the authentication
-		labManager.setAuthenticationDAO(backupAuthentication);
+		// clear the security context
+		SecurityContextHolder.clearContext();
 	}
 	
 	private Host addHost(Lab lab, String[] hostParams)
@@ -278,5 +300,6 @@ public class TestUsers
 		clearpathTCP.setDestinationIP("All TENA Nodes");
 		
 		labManager.saveProtocol(clearPath, clearpathTCP);
+		
 	}
 }

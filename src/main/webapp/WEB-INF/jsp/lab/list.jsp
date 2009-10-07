@@ -56,6 +56,7 @@
 					<input alt="Show IML" src="${show_iml_image_url}" title="Show IML" type="image" value="Show IML"/>
 					</form:form>
 				</td>
+				<security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
 				<td>
 					<c:url value="/lab/${lab.id}" var="update_form_url" />
 					<c:url value="/static/images/update.png" var="update_image_url" /> 
@@ -64,6 +65,7 @@
 							title="Update lab" type="image" value="Update lab" />
 					</form:form>
 				</td>
+				</security:authorize>
 				<%-- 
 				<td>
 					<c:url value="/lab/${lab.id}" var="delete_form_url" /> <c:url
@@ -79,10 +81,12 @@
 	</table>
 </c:if> <c:if test="${empty labs}">No labs found.</c:if></div>
 
+<security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
 <div class="buttons">
 	<c:url value="/lab/new" var="new_lab_url"/>
-	<a href="${new_lab_url}">Create New Lab</a>
+	<a href="${new_lab_url}" class="create">Create New Lab</a>
 </div>
+</security:authorize>
 
 <jsp:directive.include file="/WEB-INF/jsp/embed_google_map.jsp"/>
 <jsp:directive.include file="/WEB-INF/jsp/footer.jsp" />

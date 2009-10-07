@@ -1,17 +1,17 @@
 package jpl.simle.domain;
 
+import java.lang.String;
+
 privileged aspect SIMLEUser_Roo_ToString {
     
-    public java.lang.String SIMLEUser.toString() {    
+    public String SIMLEUser.toString() {    
         StringBuilder sb = new StringBuilder();        
-        sb.append("id: ").append(getId()).append(", ");        
-        sb.append("version: ").append(getVersion()).append(", ");        
-        sb.append("username: ").append(getUsername()).append(", ");        
-        sb.append("password: ").append(getPassword()).append(", ");        
-        sb.append("enabled: ").append(getEnabled()).append(", ");        
-        sb.append("series: ").append(getSeries()).append(", ");        
-        sb.append("token: ").append(getToken()).append(", ");        
-        sb.append("lastUsed: ").append(getLastUsed());        
+        sb.append("Id: ").append(getId()).append(", ");        
+        sb.append("Version: ").append(getVersion()).append(", ");        
+        sb.append("Username: ").append(getUsername()).append(", ");        
+        sb.append("Password: ").append(getPassword()).append(", ");        
+        sb.append("Enabled: ").append(getEnabled()).append(", ");        
+        sb.append("Group: ").append(getGroup());        
         return sb.toString();        
     }    
     

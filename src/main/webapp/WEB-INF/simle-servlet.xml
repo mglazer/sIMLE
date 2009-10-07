@@ -139,10 +139,10 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
 	<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver"/>
 	
-	<bean id="authenticationDAO" class="jpl.simle.dao.AuthenticationDAO"/>
+	<bean id="authenticationService" class="jpl.simle.service.impl.AuthenticationServiceImpl"/>
 	
-	<bean id="labManagerDAO" class="jpl.simle.dao.LabManagerDAO">
-		<property name="authenticationDAO" ref="authenticationDAO"/>
+	<bean id="labManagerService" class="jpl.simle.service.impl.LabManagerServiceImpl">
+		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
 	
 	<bean class="jpl.simle.domain.TestUsers" init-method="init"/>

@@ -24,14 +24,13 @@ import org.dom4j.QName;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-import jpl.simle.dao.LabManagerDAO;
 import jpl.simle.domain.Application;
 import jpl.simle.domain.Host;
 import jpl.simle.domain.HostApplication;
 import jpl.simle.domain.Lab;
 import jpl.simle.domain.Labs;
 import jpl.simle.domain.Protocol;
-import jpl.simle.domain.validator.LabValidator;
+import jpl.simle.service.LabManagerService;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,7 +40,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class LabController {
 	
-	private LabManagerDAO labManager_;
+	private LabManagerService labManager_;
 	
 	private final static Namespace RDF_NAMESPACE = new Namespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 	private final static Namespace RDFS_NAMESPACE = new Namespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -85,6 +84,25 @@ public class LabController {
     	Lab lab = new Lab();
     	
     	return new ModelAndView("lab/new", "lab", lab);
+    }
+    
+    @RequestMapping(value="/lab", method = RequestMethod.POST, headers={"content-type:application/xml"})
+    public String createXML(@RequestBody Lab lab, ModelMap modelMap, 
+    						HttpServletRequest request, HttpServletResponse response)
+    throws IOException
+    {
+    	lab = getLabManagerDAO().saveLab(lab);
+    	
+    	if ( lab.getId() != null )
+    	{
+    		modelMap.put("lab", lab);
+    		return "redirect:/lab/" + lab.getId();
+    	}
+    	else
+    	{
+    		response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not save the lab");
+    		return "error";
+    	}
     }
     
     @RequestMapping(value="/lab", method = RequestMethod.POST)
@@ -216,11 +234,11 @@ public class LabController {
 	}
 
 	@Autowired
-	public void setLabManagerDAO(LabManagerDAO labManagerDAO) {
+	public void setLabManagerDAO(LabManagerService labManagerDAO) {
 		labManager_ = labManagerDAO;
 	}
 
-	public LabManagerDAO getLabManagerDAO() {
+	public LabManagerService getLabManagerDAO() {
 		return labManager_;
 	}
 	

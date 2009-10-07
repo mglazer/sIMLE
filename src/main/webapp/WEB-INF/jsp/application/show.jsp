@@ -86,6 +86,7 @@
 	</tbody>
 	</table>
 	
+	<security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
 	<c:url value="/application/${application.id}/protocol/" var="create_protocol_url"/>
 	<fieldset>
 	<legend>Add Protocol</legend>
@@ -114,6 +115,7 @@
 		</div>
 	</form> 
 	</fieldset>
+	</security:authorize>
 		
 </c:if>
 <c:if test="${empty application}">No application found with this id.</c:if>

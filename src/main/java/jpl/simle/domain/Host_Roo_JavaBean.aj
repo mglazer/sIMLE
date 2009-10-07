@@ -1,36 +1,39 @@
 package jpl.simle.domain;
 
+import java.lang.String;
+import jpl.simle.domain.Lab;
+
 privileged aspect Host_Roo_JavaBean {
     
-    public jpl.simle.domain.Lab Host.getLab() {    
+    public Lab Host.getLab() {    
         return this.lab;        
     }    
     
-    public void Host.setLab(jpl.simle.domain.Lab lab) {    
+    public void Host.setLab(Lab lab) {    
         this.lab = lab;        
     }    
     
-    public java.lang.String Host.getName() {    
+    public String Host.getName() {    
         return this.name;        
     }    
     
-    public void Host.setName(java.lang.String name) {    
+    public void Host.setName(String name) {    
         this.name = name;        
     }    
     
-    public java.lang.String Host.getDnsNames() {    
+    public String Host.getDnsNames() {    
         return this.dnsNames;        
     }    
     
-    public void Host.setDnsNames(java.lang.String dnsNames) {    
+    public void Host.setDnsNames(String dnsNames) {    
         this.dnsNames = dnsNames;        
     }    
     
-    public java.lang.String Host.getAddressIP() {    
+    public String Host.getAddressIP() {    
         return this.addressIP;        
     }    
     
-    public void Host.setAddressIP(java.lang.String addressIP) {    
+    public void Host.setAddressIP(String addressIP) {    
         this.addressIP = addressIP;        
     }    
     

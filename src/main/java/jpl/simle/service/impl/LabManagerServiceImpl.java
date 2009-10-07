@@ -1,4 +1,4 @@
-package jpl.simle.dao;
+package jpl.simle.service.impl;
 
 import java.util.List;
 
@@ -10,20 +10,21 @@ import jpl.simle.domain.HostApplication;
 import jpl.simle.domain.Lab;
 import jpl.simle.domain.Protocol;
 import jpl.simle.domain.Application;
+import jpl.simle.domain.SIMLEUser;
+import jpl.simle.service.AuthenticationService;
+import jpl.simle.service.LabManagerService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.access.prepost.PreAuthorize;
 
-public class LabManagerDAO 
+public class LabManagerServiceImpl implements LabManagerService 
 {
 	@javax.persistence.PersistenceContext
 	private	transient javax.persistence.EntityManager entityManager_;
 	
-	private AuthenticationDAO authenticationDAO_;
+	private AuthenticationService authenticationService_;
 
 	private final Logger logger_ = LoggerFactory.getLogger(getClass());
 	
@@ -34,9 +35,12 @@ public class LabManagerDAO
 	 *****************************
 	 */
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#saveLab(jpl.simle.domain.Lab)
+	 */
 	public Lab saveLab(Lab lab)
 	{
-		lab.setUsername(getUsername());
+		lab.setGroupName(getAuthenticatedUser().getGroup().getGroupName());
 		
 		if ( lab.getId() != null )
 		{
@@ -50,27 +54,21 @@ public class LabManagerDAO
 		return lab;
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#findLabById(java.lang.Long)
+	 */
 	public Lab findLabById(Long id)
 	{
-		Query query = entityManager_.createQuery("SELECT Lab from Lab AS lab WHERE lab.id = :id AND lab.username = :username");
-		query.setParameter("id", id);
-		query.setParameter("username", getUsername());
-		
-		try
-		{
-			return (Lab)query.getSingleResult();
-		}
-		catch (NoResultException nre)
-		{
-			logger_.error("Could not find a lab with the id: " + id + " for user " + getUsername());
-			return null;
-		}
+		return Lab.findLabByIdAndGroupname(id, getAuthenticatedUser().getGroup().getGroupName());
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#findLabs()
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Lab> findLabs()
 	{
-		return Lab.findLabsByUsernameEquals(getUsername()).getResultList();
+		return Lab.findLabsByGroupNameEquals(getAuthenticatedUser().getGroup().getGroupName()).getResultList();
 		//return Lab.findAllLabs();
 	}
 
@@ -81,6 +79,9 @@ public class LabManagerDAO
 	 *******************************
 	 */
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#findHost(java.lang.Long, java.lang.Long)
+	 */
 	public Host findHost(Long labId, Long hostId)
 	{
 		// find the lab first note that since they're supplying
@@ -100,6 +101,9 @@ public class LabManagerDAO
 		return host;
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#findHosts(java.lang.Long)
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Host> findHosts(Long labId)
 	{
@@ -113,6 +117,9 @@ public class LabManagerDAO
 		return Host.findHostsByLab(lab).getResultList();
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#saveHost(java.lang.Long, jpl.simle.domain.Host)
+	 */
 	public Host saveHost(Long labId, Host host)
 	{
 		Lab lab = findLabById(labId);
@@ -144,11 +151,17 @@ public class LabManagerDAO
 	 *******************************
 	 */
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#findApplication(java.lang.Long)
+	 */
 	public Application findApplication(Long applicationId)
 	{
 		return Application.findApplication(applicationId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#saveApplication(jpl.simle.domain.Application)
+	 */
 	public Application saveApplication(Application application)
 	{
 		if ( application.getId() == null )
@@ -164,11 +177,17 @@ public class LabManagerDAO
 		return application;
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#findApplications()
+	 */
 	public List<Application> findApplications()
 	{
 		return Application.findAllApplications();
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#createHostApplicationLink(jpl.simle.domain.Application, jpl.simle.domain.Host)
+	 */
 	public HostApplication createHostApplicationLink(Application application, Host host)
 	{
 		HostApplication ha = new HostApplication();
@@ -182,6 +201,9 @@ public class LabManagerDAO
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#updateHostApplicationLink(jpl.simle.domain.HostApplication, jpl.simle.domain.Application, jpl.simle.domain.Host)
+	 */
 	public HostApplication updateHostApplicationLink(HostApplication link, Application application, Host host)
 	{
 		if ( link.getId() == null )
@@ -197,17 +219,26 @@ public class LabManagerDAO
 		return link;
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#findHostApplicationLink(java.lang.Long)
+	 */
 	public HostApplication findHostApplicationLink(Long linkId)
 	{
 		return HostApplication.findHostApplication(linkId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#findHostApplicationsForHost(jpl.simle.domain.Host)
+	 */
 	@SuppressWarnings("unchecked")
 	public List<HostApplication> findHostApplicationsForHost(Host host)
 	{
 		return HostApplication.findHostApplicationsByHost(host).getResultList();
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#deleteHostApplicationLink(jpl.simle.domain.HostApplication)
+	 */
 	public void deleteHostApplicationLink(HostApplication link)
 	{
 		link.remove();
@@ -219,6 +250,9 @@ public class LabManagerDAO
 	 *******************************
 	 */
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#findProtocolsByApplicationId(java.lang.Long)
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Protocol> findProtocolsByApplicationId(Long id) 
 	{
@@ -232,11 +266,17 @@ public class LabManagerDAO
 		return Protocol.findProtocolsByApplication(app).getResultList();
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#findProtocol(java.lang.Long, java.lang.Long)
+	 */
 	public Protocol findProtocol(Long applicationId, Long protocolId)
 	{
 		return Protocol.findProtocol(protocolId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#saveProtocol(java.lang.Long, jpl.simle.domain.Protocol)
+	 */
 	public Protocol saveProtocol(Long appId, Protocol protocol)
 	{
 		Application app = findApplication(appId);
@@ -244,6 +284,9 @@ public class LabManagerDAO
 		return saveProtocol(app, protocol);
 	}
 	
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#saveProtocol(jpl.simle.domain.Application, jpl.simle.domain.Protocol)
+	 */
 	public Protocol saveProtocol(Application app, Protocol protocol)
 	{
 		if ( app == null )
@@ -260,7 +303,12 @@ public class LabManagerDAO
 	
 	protected String getUsername() 
 	{
-		return authenticationDAO_.getAuthenticatedUsername();
+		return authenticationService_.getAuthenticatedUsername();
+	}
+	
+	protected SIMLEUser getAuthenticatedUser()
+	{
+		return SIMLEUser.findUserByUsername(getUsername());
 	}
 
 	public void setEntityManager(javax.persistence.EntityManager entityManager) {
@@ -271,14 +319,20 @@ public class LabManagerDAO
 		return entityManager_;
 	}
 	
-	public void setAuthenticationDAO(AuthenticationDAO authenticationDAO)
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#setAuthenticationDAO(jpl.simle.service.impl.AuthenticationServiceImpl)
+	 */
+	public void setAuthenticationService(AuthenticationService authenticationService)
 	{
-		authenticationDAO_ = authenticationDAO;
+		authenticationService_ = authenticationService;
 	}
 	
-	public AuthenticationDAO getAuthenticationDAO()
+	/* (non-Javadoc)
+	 * @see jpl.simle.service.impl.LabManagerService#getAuthenticationDAO()
+	 */
+	public AuthenticationService getAuthenticationService()
 	{
-		return authenticationDAO_;
+		return authenticationService_;
 	}
 
 

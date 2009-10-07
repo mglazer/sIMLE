@@ -25,6 +25,8 @@
 <property name="dataSource" ref="dataSource"/>
 </bean>
 
-	<bean id="labManagerDAO" class="jpl.simle.dao.LabManagerDAO">
+	<bean id="authenticationService" class="jpl.simle.service.impl.AuthenticationServiceImpl"/>
+	<bean id="labManagerService" class="jpl.simle.service.impl.LabManagerServiceImpl">
+		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
 </beans>

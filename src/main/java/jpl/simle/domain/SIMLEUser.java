@@ -7,45 +7,44 @@ import org.springframework.roo.addon.tostring.RooToString;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
 import javax.persistence.Column;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@RooEntity
 @RooJavaBean
 @RooToString
-@Table(name="users")
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = { "username" }))
+@RooEntity(finders = { "findSIMLEUsersByUsernameEquals" })
 public class SIMLEUser {
 
     @NotNull
-    @Column(name="username")
+    @Column(name = "username")
     private String username;
 
     @NotNull
-    @Column(name="password")
+    @Column(name = "password")
     private String password;
 
-    @Column(name="enabled")
+    @Column(name = "enabled")
     private Boolean enabled;
 
-    @Column(name="series")
-    private String series;
-
     @NotNull
-    @Column(name="token")
-    private String token;
-
-    @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="last_used")
-    private Date lastUsed;
+    @ManyToOne(targetEntity = SIMLEGroup.class)
+    @JoinColumn(name="simle_group")
+    private SIMLEGroup group;
     
-    //@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    //private Set<Authority> authorities = new HashSet<Authority>();
+    public static SIMLEUser findUserByUsername(String username)
+    {
+    	return (SIMLEUser)SIMLEUser.findSIMLEUsersByUsernameEquals(username).getSingleResult();
+    }
 }

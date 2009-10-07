@@ -9,11 +9,20 @@ import jpl.simle.domain.Host;
 import jpl.simle.domain.HostApplication;
 import jpl.simle.domain.Lab;
 import jpl.simle.domain.Protocol;
+import jpl.simle.domain.SIMLEGroup;
+import jpl.simle.domain.SIMLEUser;
+import jpl.simle.service.LabManagerService;
+import jpl.simle.service.impl.AuthenticationServiceImpl;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -27,10 +36,10 @@ import static org.junit.Assert.*;
 @Transactional
 public class LabManagerDAOTest
 {
-	private LabManagerDAO labManager_;
+	private LabManagerService labManager_;
 
 	@Autowired
-	public void setLabManagerDAO(LabManagerDAO labManager)
+	public void setLabManagerService(LabManagerService labManager)
 	{
 		labManager_ = labManager;
 	}
@@ -38,11 +47,26 @@ public class LabManagerDAOTest
 	@Before
 	public void setUp()
 	{
+		SIMLEUser user = new SIMLEUser();
+		user.setUsername("ignored");
+		user.setPassword("ignored");
+		
+		SIMLEGroup group = new SIMLEGroup();
+		group.setGroupName("ignored");
+		
+		group.persist();
+		user.setGroup(group);
+		user.persist();
+		
+		Authentication authRequest = new UsernamePasswordAuthenticationToken("ignored", "ignored", AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
+		SecurityContextHolder.getContext().setAuthentication(authRequest);
+		/*
 		labManager_.setAuthenticationDAO(new AuthenticationDAO() {
 			public String getAuthenticatedUsername() {
 				return "user";
 			}
 		});
+		*/
 	}
 	
 	@Test
@@ -56,7 +80,7 @@ public class LabManagerDAOTest
 		Lab returnedLab = labManager_.saveLab(lab);
 		
 		assertNotNull(returnedLab.getId());
-		assertNotNull(returnedLab.getUsername());
+		assertNotNull(returnedLab.getGroupName());
 	}
 	
 	@Test
@@ -76,7 +100,7 @@ public class LabManagerDAOTest
 		assertEquals("TEST_LAB", lab.getName());
 	}
 	
-	@Test
+	@Test(expected=NoResultException.class)
 	public void shouldNotFindInvalidLab()
 	{
 		Lab lab = labManager_.findLabById(new Long(999));
@@ -94,14 +118,45 @@ public class LabManagerDAOTest
 		Lab returnedLab = labManager_.saveLab(lab);
 		assertNotNull(returnedLab.getId());
 		
-		labManager_.setAuthenticationDAO(new AuthenticationDAO() {
+		labManager_.setAuthenticationService(new AuthenticationServiceImpl() {
 			public String getAuthenticatedUsername() {
 				return "INVALID_USER";
 			}
 		});
 		
-		Lab nullLab = labManager_.findLabById(returnedLab.getId());
-		assertNull(nullLab);
+		try
+		{
+			Lab nullLab = labManager_.findLabById(returnedLab.getId());
+			fail("We should not be capable of finding a lab without an ID and an acceptable username");
+		}
+		catch (Exception e)
+		{
+			// passes
+		}
+	}
+	
+	@Test
+	public void shouldNotFindLabIfUserNotInGroup()
+	{
+		Lab lab = new Lab();
+		lab.setLatitude(new Double(25.54));
+		lab.setLongitude(new Double(25.34));
+		lab.setName("TEST_LAB");
+
+		// the labManager automatically sets the group name on the lab when we save it,
+		// so we have to work around this and persist it manually
+		lab.setGroupName("INVALID_GROUP");
+		lab.persist();
+		
+		try
+		{
+			labManager_.findLabById(lab.getId());
+			fail("We should not be capable of finding a lab without an ID and when we're not in its group");
+		}
+		catch (Exception e)
+		{
+			// passes
+		}
 	}
 	
 	@Test
@@ -222,7 +277,7 @@ public class LabManagerDAOTest
 		
 		assertNotNull(app.getId());
 		assertNotNull(app.getAddedByUsername());
-		assertEquals("user", app.getAddedByUsername());
+		assertEquals("ignored", app.getAddedByUsername());
 	}
 	
 	@Test
@@ -416,6 +471,12 @@ public class LabManagerDAOTest
 		}
 		
 		assertEquals(10, labManager_.findProtocolsByApplicationId(app.getId()).size());
+	}
+	
+	@After
+	public void tearDown()
+	{
+		SecurityContextHolder.clearContext();
 	}
 	
 }

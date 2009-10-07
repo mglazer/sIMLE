@@ -1,5 +1,6 @@
 package jpl.simle.web;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,10 +11,10 @@ import org.springframework.ui.ModelMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jpl.simle.dao.LabManagerDAO;
 import jpl.simle.domain.Application;
 import jpl.simle.domain.Host;
 import jpl.simle.domain.HostApplication;
+import jpl.simle.service.LabManagerService;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HostController {
 
-	private LabManagerDAO labManager_;
+	private LabManagerService labManager_;
 	
 	@RequestMapping(value="/lab/{labId}/hosts", method=RequestMethod.GET)
 	public ModelAndView list(@PathVariable Long labId)
@@ -52,6 +53,25 @@ public class HostController {
     	return new ModelAndView("/host/new", "host", host);
     }
     
+    @RequestMapping(method = RequestMethod.POST, value="/lab/{labId}/host", headers={"content-type=application/xml"})
+    public String createXML(@PathVariable Long labId, @RequestBody Host host, ModelMap modelMap,
+    						HttpServletRequest request, HttpServletResponse response)
+    throws IOException
+    {
+    	host = labManager_.saveHost(labId, host);
+    	
+    	if ( host.getId() != null )
+    	{
+    		modelMap.put("host", host);
+    		return "redirect:/lab/" + labId + "/host/" + host.getId();
+    	}
+    	else
+    	{
+    		modelMap.put("error", "There were errors creating the host");
+    		response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not save the host");
+    		return "error";
+    	}
+    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/lab/{labId}/host")
     public ModelAndView create(@PathVariable Long labId,
@@ -175,7 +195,7 @@ public class HostController {
     }
     
     @Autowired
-    public void setLabManagerDAO(LabManagerDAO labManager)
+    public void setLabManagerDAO(LabManagerService labManager)
     {
     	labManager_ = labManager;
     }

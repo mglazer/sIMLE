@@ -27,6 +27,7 @@
 						type="image" value="Show application" />
 					</form:form>
 				</td>
+				<security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
 				<td>
 					<c:url value="/application/${application.id}" var="update_form_url" />
 					<c:url value="/static/images/update.png" var="update_image_url" /> 
@@ -35,6 +36,7 @@
 							title="Update application" type="image" value="Update application" />
 					</form:form>
 				</td>
+				</security:authorize>
 				<%--
 				<td>
 					<c:url value="/application/${application.id}" var="delete_form_url" /> <c:url
@@ -52,8 +54,10 @@
 
 <c:if test="${empty applications}">No applications found.</c:if></div>
 
+<security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
 <div class="buttons">
 	<c:url value="/application/new" var="new_application_url"/>
-	<a href="${new_application_url}">Create New Application</a>
+	<a href="${new_application_url}" class="create">Create New Application</a>
 </div>
+</security:authorize>
 <jsp:directive.include file="/WEB-INF/jsp/footer.jsp" />

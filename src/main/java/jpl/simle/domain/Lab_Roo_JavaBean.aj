@@ -1,52 +1,57 @@
 package jpl.simle.domain;
 
+import java.lang.Double;
+import java.lang.String;
+import java.util.Set;
+import jpl.simle.domain.Host;
+
 privileged aspect Lab_Roo_JavaBean {
     
-    public java.util.Set<jpl.simle.domain.Host> Lab.getHosts() {    
+    public Set<Host> Lab.getHosts() {    
         return this.hosts;        
     }    
     
-    public void Lab.setHosts(java.util.Set<jpl.simle.domain.Host> hosts) {    
+    public void Lab.setHosts(Set<Host> hosts) {    
         this.hosts = hosts;        
     }    
     
-    public java.lang.String Lab.getUsername() {    
-        return this.username;        
+    public String Lab.getGroupName() {    
+        return this.groupName;        
     }    
     
-    public void Lab.setUsername(java.lang.String username) {    
-        this.username = username;        
+    public void Lab.setGroupName(String groupName) {    
+        this.groupName = groupName;        
     }    
     
-    public java.lang.String Lab.getName() {    
+    public String Lab.getName() {    
         return this.name;        
     }    
     
-    public void Lab.setName(java.lang.String name) {    
+    public void Lab.setName(String name) {    
         this.name = name;        
     }    
     
-    public java.lang.String Lab.getDomainName() {    
+    public String Lab.getDomainName() {    
         return this.domainName;        
     }    
     
-    public void Lab.setDomainName(java.lang.String domainName) {    
+    public void Lab.setDomainName(String domainName) {    
         this.domainName = domainName;        
     }    
     
-    public java.lang.Double Lab.getLatitude() {    
+    public Double Lab.getLatitude() {    
         return this.latitude;        
     }    
     
-    public void Lab.setLatitude(java.lang.Double latitude) {    
+    public void Lab.setLatitude(Double latitude) {    
         this.latitude = latitude;        
     }    
     
-    public java.lang.Double Lab.getLongitude() {    
+    public Double Lab.getLongitude() {    
         return this.longitude;        
     }    
     
-    public void Lab.setLongitude(java.lang.Double longitude) {    
+    public void Lab.setLongitude(Double longitude) {    
         this.longitude = longitude;        
     }    
     

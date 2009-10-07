@@ -1,32 +1,38 @@
 package jpl.simle.domain;
 
+import java.beans.PropertyEditorSupport;
+import java.lang.Long;
+import java.lang.String;
+import jpl.simle.domain.Lab;
+import org.springframework.beans.SimpleTypeConverter;
+
 privileged aspect LabEditor_Roo_Editor {
     
-    declare parents: LabEditor implements java.beans.PropertyEditorSupport;    
+    declare parents: LabEditor implements PropertyEditorSupport;    
     
-    org.springframework.beans.SimpleTypeConverter LabEditor.typeConverter = new org.springframework.beans.SimpleTypeConverter();    
+    private SimpleTypeConverter LabEditor.typeConverter = new SimpleTypeConverter();    
     
-    public java.lang.String LabEditor.getAsText() {    
+    public String LabEditor.getAsText() {    
         Object obj = getValue();        
         if (obj == null) {        
             return null;            
         }        
-        return (String) typeConverter.convertIfNecessary(((jpl.simle.domain.Lab) obj).getId() , String.class);        
+        return (String) typeConverter.convertIfNecessary(((Lab) obj).getId(), String.class);        
     }    
     
-    public void LabEditor.setAsText(java.lang.String text) {    
+    public void LabEditor.setAsText(String text) {    
         if (text == null || 0 == text.length()) {        
             setValue(null);            
             return;            
         }        
         
-        java.lang.Long identifier = (java.lang.Long) typeConverter.convertIfNecessary(text, java.lang.Long.class);        
+        Long identifier = (Long) typeConverter.convertIfNecessary(text, Long.class);        
         if (identifier == null) {        
             setValue(null);            
             return;            
         }        
         
-        setValue(jpl.simle.domain.Lab.findLab(identifier));        
+        setValue(Lab.findLab(identifier));        
     }    
     
 }

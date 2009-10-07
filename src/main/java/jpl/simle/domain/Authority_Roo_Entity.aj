@@ -1,42 +1,55 @@
 package jpl.simle.domain;
 
+import java.lang.Integer;
+import java.lang.Long;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Version;
+import jpl.simle.domain.Authority;
+import org.springframework.transaction.annotation.Transactional;
+
 privileged aspect Authority_Roo_Entity {
     
-    @javax.persistence.PersistenceContext    
-    transient javax.persistence.EntityManager Authority.entityManager;    
+    @PersistenceContext    
+    transient EntityManager Authority.entityManager;    
     
-    @javax.persistence.Id    
-    @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)    
-    @javax.persistence.Column(name = "id")    
-    private java.lang.Long Authority.id;    
+    @Id    
+    @GeneratedValue(strategy = GenerationType.AUTO)    
+    @Column(name = "id")    
+    private Long Authority.id;    
     
-    @javax.persistence.Version    
-    @javax.persistence.Column(name = "version")    
-    private java.lang.Integer Authority.version;    
+    @Version    
+    @Column(name = "version")    
+    private Integer Authority.version;    
     
-    public java.lang.Long Authority.getId() {    
+    public Long Authority.getId() {    
         return this.id;        
     }    
     
-    public void Authority.setId(java.lang.Long id) {    
+    public void Authority.setId(Long id) {    
         this.id = id;        
     }    
     
-    public java.lang.Integer Authority.getVersion() {    
+    public Integer Authority.getVersion() {    
         return this.version;        
     }    
     
-    public void Authority.setVersion(java.lang.Integer version) {    
+    public void Authority.setVersion(Integer version) {    
         this.version = version;        
     }    
     
-    @org.springframework.transaction.annotation.Transactional    
+    @Transactional    
     public void Authority.persist() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.persist(this);        
     }    
     
-    @org.springframework.transaction.annotation.Transactional    
+    @Transactional    
     public void Authority.remove() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         if (this.entityManager.contains(this)) {        
@@ -47,13 +60,13 @@ privileged aspect Authority_Roo_Entity {
         }        
     }    
     
-    @org.springframework.transaction.annotation.Transactional    
+    @Transactional    
     public void Authority.flush() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.flush();        
     }    
     
-    @org.springframework.transaction.annotation.Transactional    
+    @Transactional    
     public void Authority.merge() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         Authority merged = this.entityManager.merge(this);        
@@ -61,8 +74,8 @@ privileged aspect Authority_Roo_Entity {
         this.id = merged.getId();        
     }    
     
-    public static javax.persistence.EntityManager Authority.entityManager() {    
-        javax.persistence.EntityManager em = new Authority().entityManager;        
+    public static EntityManager Authority.entityManager() {    
+        EntityManager em = new Authority().entityManager;        
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");        
         return em;        
     }    
@@ -71,16 +84,16 @@ privileged aspect Authority_Roo_Entity {
         return (Long) entityManager().createQuery("select count(o) from Authority o").getSingleResult();        
     }    
     
-    public static java.util.List<jpl.simle.domain.Authority> Authority.findAllAuthoritys() {    
+    public static List<Authority> Authority.findAllAuthoritys() {    
         return entityManager().createQuery("select o from Authority o").getResultList();        
     }    
     
-    public static jpl.simle.domain.Authority Authority.findAuthority(java.lang.Long id) {    
+    public static Authority Authority.findAuthority(Long id) {    
         if (id == null) throw new IllegalArgumentException("An identifier is required to retrieve an instance of Authority");        
         return entityManager().find(Authority.class, id);        
     }    
     
-    public static java.util.List<jpl.simle.domain.Authority> Authority.findAuthorityEntries(int firstResult, int maxResults) {    
+    public static List<Authority> Authority.findAuthorityEntries(int firstResult, int maxResults) {    
         return entityManager().createQuery("select o from Authority o").setFirstResult(firstResult).setMaxResults(maxResults).getResultList();        
     }    
     
