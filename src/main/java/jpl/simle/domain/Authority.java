@@ -17,10 +17,23 @@ import javax.persistence.Table;
 @Table(name="authorities")
 public class Authority {
 	
+	public enum AuthorityTypes 
+	{
+		ROLE_USER,
+		ROLE_GROUP_ADMIN,
+		ROLE_ADMIN
+	}
+	
     @Column(name="username")
     private String username;
     
     @NotNull
     @Column(name="authority")
     private String authority;
+    
+    
+    public void setAuthority(AuthorityTypes authority)
+    {
+    	this.authority = authority.toString();
+    }
 }

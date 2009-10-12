@@ -7,6 +7,7 @@ import jpl.simle.domain.Host;
 import jpl.simle.domain.HostApplication;
 import jpl.simle.domain.Lab;
 import jpl.simle.domain.Protocol;
+import jpl.simle.domain.SIMLEUser;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -52,15 +53,12 @@ public interface LabManagerService {
 
 	public abstract Protocol findProtocol(Long applicationId, Long protocolId);
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN'))")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')")
 	public abstract Protocol saveProtocol(Long appId, Protocol protocol);
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN'))")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')")
 	public abstract Protocol saveProtocol(Application app, Protocol protocol);
-
-	public abstract void setAuthenticationService(
-			AuthenticationService authenticationService);
-
-	public abstract AuthenticationService getAuthenticationService();
+	
+	public abstract void setUserService(UserService userService);
 
 }

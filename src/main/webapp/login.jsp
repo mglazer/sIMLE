@@ -1,8 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%@ page import="org.springframework.security.ui.AbstractProcessingFilter" %>
-<%@ page import="org.springframework.security.ui.webapp.AuthenticationProcessingFilter" %>
-<%@ page import="org.springframework.security.AuthenticationException" %>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 
@@ -38,12 +35,15 @@
     <%-- this form-login-page form is also used as the
          form-error-page to ask for a login again.
          --%>
-    <c:if test="${not empty param.login_error}">
-      <font color="red">Your login attempt was not successful, try again.<br/>
-        Reason: <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>.
-      </font>
-    </c:if>
 	<form id="login" name="f" action="<c:url value='/static/j_spring_security_check'/>" method="POST"> 
+	    <c:if test="${not empty param.login_error}">
+	    	<div class="errorExplanation">
+      		Your login attempt was not successful, try again. Reason:
+      		<ul>
+      			<li><c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>.</li>
+      		</ul>
+      		</div>
+    	</c:if>
     	<div>
             <label for="j_username">Name:</label>
             <input id="j_username" type='text' name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/>

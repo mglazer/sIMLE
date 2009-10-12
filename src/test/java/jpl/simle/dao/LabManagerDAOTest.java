@@ -12,8 +12,14 @@ import jpl.simle.domain.Protocol;
 import jpl.simle.domain.SIMLEGroup;
 import jpl.simle.domain.SIMLEUser;
 import jpl.simle.service.LabManagerService;
+import jpl.simle.service.UserService;
 import jpl.simle.service.impl.AuthenticationServiceImpl;
+import jpl.simle.service.impl.UserServiceImpl;
 
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JMock;
+import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +43,8 @@ import static org.junit.Assert.*;
 public class LabManagerDAOTest
 {
 	private LabManagerService labManager_;
+	private Mockery context = new JUnit4Mockery();
+	private UserService userService;
 
 	@Autowired
 	public void setLabManagerService(LabManagerService labManager)
@@ -47,19 +55,24 @@ public class LabManagerDAOTest
 	@Before
 	public void setUp()
 	{
-		SIMLEUser user = new SIMLEUser();
-		user.setUsername("ignored");
-		user.setPassword("ignored");
-		
-		SIMLEGroup group = new SIMLEGroup();
-		group.setGroupName("ignored");
-		
-		group.persist();
-		user.setGroup(group);
-		user.persist();
-		
-		Authentication authRequest = new UsernamePasswordAuthenticationToken("ignored", "ignored", AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
-		SecurityContextHolder.getContext().setAuthentication(authRequest);
+	    userService = context.mock(UserService.class);
+	    
+	    final SIMLEUser user = new SIMLEUser();
+	    user.setUsername("TEST_USER");
+	    
+	    final SIMLEGroup group = new SIMLEGroup();
+	    group.setGroupName("TEST_GROUP");
+	    
+	    user.setGroup(group);
+
+	    context.checking(new Expectations() {{
+	        allowing (userService).getAuthenticatedUserGroup();
+	            will(returnValue(group));
+	        allowing (userService).getAuthenticatedUsername();
+	            will(returnValue(user.getUsername()));
+	    }});
+	    
+	    labManager_.setUserService(userService);
 		/*
 		labManager_.setAuthenticationDAO(new AuthenticationDAO() {
 			public String getAuthenticatedUsername() {
@@ -118,11 +131,22 @@ public class LabManagerDAOTest
 		Lab returnedLab = labManager_.saveLab(lab);
 		assertNotNull(returnedLab.getId());
 		
-		labManager_.setAuthenticationService(new AuthenticationServiceImpl() {
-			public String getAuthenticatedUsername() {
-				return "INVALID_USER";
-			}
-		});
+		// yeah, this is sort of messy, but it's the only way to reset our user
+		// service mock so that it returns an invalid username 
+		context = new JUnit4Mockery();
+		
+		final UserService bogusUserService = context.mock(UserService.class);
+		
+		final SIMLEGroup bogusGroup = new SIMLEGroup();
+		bogusGroup.setGroupName("INVALID_GROUP");
+		
+		context.checking(new Expectations() {{
+		    oneOf (bogusUserService).getAuthenticatedUsername();
+		        will(returnValue("INVALID_USER"));
+		    oneOf (bogusUserService).getAuthenticatedUserGroup();
+		        will(returnValue(bogusGroup));
+		}});
+		labManager_.setUserService(bogusUserService);
 		
 		try
 		{
@@ -277,7 +301,7 @@ public class LabManagerDAOTest
 		
 		assertNotNull(app.getId());
 		assertNotNull(app.getAddedByUsername());
-		assertEquals("ignored", app.getAddedByUsername());
+		assertEquals("TEST_USER", app.getAddedByUsername());
 	}
 	
 	@Test

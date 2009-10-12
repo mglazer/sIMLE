@@ -13,10 +13,12 @@ import jpl.simle.domain.Application;
 import jpl.simle.domain.SIMLEUser;
 import jpl.simle.service.AuthenticationService;
 import jpl.simle.service.LabManagerService;
+import jpl.simle.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 public class LabManagerServiceImpl implements LabManagerService 
@@ -24,7 +26,7 @@ public class LabManagerServiceImpl implements LabManagerService
 	@javax.persistence.PersistenceContext
 	private	transient javax.persistence.EntityManager entityManager_;
 	
-	private AuthenticationService authenticationService_;
+	private UserService userService_;
 
 	private final Logger logger_ = LoggerFactory.getLogger(getClass());
 	
@@ -40,7 +42,7 @@ public class LabManagerServiceImpl implements LabManagerService
 	 */
 	public Lab saveLab(Lab lab)
 	{
-		lab.setGroupName(getAuthenticatedUser().getGroup().getGroupName());
+		lab.setGroupName(userService_.getAuthenticatedUserGroup().getGroupName());
 		
 		if ( lab.getId() != null )
 		{
@@ -59,7 +61,7 @@ public class LabManagerServiceImpl implements LabManagerService
 	 */
 	public Lab findLabById(Long id)
 	{
-		return Lab.findLabByIdAndGroupname(id, getAuthenticatedUser().getGroup().getGroupName());
+		return Lab.findLabByIdAndGroupname(id, userService_.getAuthenticatedUserGroup().getGroupName());
 	}
 	
 	/* (non-Javadoc)
@@ -68,7 +70,7 @@ public class LabManagerServiceImpl implements LabManagerService
 	@SuppressWarnings("unchecked")
 	public List<Lab> findLabs()
 	{
-		return Lab.findLabsByGroupNameEquals(getAuthenticatedUser().getGroup().getGroupName()).getResultList();
+		return Lab.findLabsByGroupNameEquals(userService_.getAuthenticatedUserGroup().getGroupName()).getResultList();
 		//return Lab.findAllLabs();
 	}
 
@@ -303,7 +305,7 @@ public class LabManagerServiceImpl implements LabManagerService
 	
 	protected String getUsername() 
 	{
-		return authenticationService_.getAuthenticatedUsername();
+		return userService_.getAuthenticatedUsername();
 	}
 	
 	protected SIMLEUser getAuthenticatedUser()
@@ -319,21 +321,11 @@ public class LabManagerServiceImpl implements LabManagerService
 		return entityManager_;
 	}
 	
-	/* (non-Javadoc)
-	 * @see jpl.simle.service.impl.LabManagerService#setAuthenticationDAO(jpl.simle.service.impl.AuthenticationServiceImpl)
-	 */
-	public void setAuthenticationService(AuthenticationService authenticationService)
-	{
-		authenticationService_ = authenticationService;
-	}
-	
-	/* (non-Javadoc)
-	 * @see jpl.simle.service.impl.LabManagerService#getAuthenticationDAO()
-	 */
-	public AuthenticationService getAuthenticationService()
-	{
-		return authenticationService_;
-	}
+	@Autowired
+    public void setUserService(UserService userService)
+    {
+        userService_ = userService;
+    }
 
 
 }

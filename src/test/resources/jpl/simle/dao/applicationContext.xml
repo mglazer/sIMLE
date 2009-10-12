@@ -27,6 +27,6 @@
 
 	<bean id="authenticationService" class="jpl.simle.service.impl.AuthenticationServiceImpl"/>
 	<bean id="labManagerService" class="jpl.simle.service.impl.LabManagerServiceImpl">
-		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
+	<bean id="userService" class="jpl.simle.service.impl.UserServiceImpl"></bean>
 </beans>

@@ -1,11 +1,10 @@
 /* main elements */
 
 body,div,td {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: “Lucida Grande”, Tahoma, Verdana, sans-serif;
 	font-size: 14px;
 	color: #666;
 }
-
 body {
 	background-color: #fff;
 	background-position: top center;
@@ -22,7 +21,6 @@ body {
 }
 
 .formContainer {
-	height:400px;
 }
 
 input {
@@ -44,7 +42,7 @@ label {
 	margin-top: 5px;
 }
 
-input[type="text"], textarea{
+input[type="text"], textarea, input[type="password"] {
 	border: 1px solid #CFDFCF;
 	color: #282828;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -53,7 +51,7 @@ input[type="text"], textarea{
 	padding-top: 8px;
 }
 
-input[type="text"] {
+input[type="text"], input[type="password"] {
 	width: 250px;
 	height: 30px;
 }
@@ -185,7 +183,6 @@ h4 {
 
 a {
 	text-decoration: underline;
-	font-size: 13px;
 }
 
 a:link {
@@ -378,10 +375,8 @@ fieldset th {
 
 
 #menu a, #menu h2 {
-	display: block;
 	margin: 0;
 	padding: 2px 6px;
-	color:#FFFFFF;
 }
 
 #menu h2 {
@@ -392,10 +387,17 @@ fieldset th {
 	font-size: 1em;
 }
 
+#menu a {
+	text-decoration: none;
+}
+
+#menu a span {
+	display: inline-block;
+	clear: both;
+}
 
 #menu a:hover {
 	color: #FF4040;
-	background: #EFEFEF;
 }
 
 #menu a img {
@@ -435,6 +437,23 @@ form#login {
 	position:relative;
 	width:350px;
 }
+
+
+#login .errorExplanation {
+	color: #CC0000;
+	font-style: italic;
+	border: 0px;
+}
+
+#login .errorExplanation ul {
+	list-style-type: none;
+}
+
+#login .errorExplanation li {
+	background: url(../images/exclamation.png) no-repeat 8px 4px;
+	line-height: 16px;
+	padding-left: 30px;
+}	
 
 label#remember_me {
 	clear: none;
