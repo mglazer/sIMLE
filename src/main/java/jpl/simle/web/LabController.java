@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.ui.ModelMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -31,6 +34,7 @@ import jpl.simle.domain.Lab;
 import jpl.simle.domain.Labs;
 import jpl.simle.domain.Protocol;
 import jpl.simle.service.LabManagerService;
+import jpl.simle.utils.SIMLEUtils;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,75 +56,75 @@ public class LabController {
 	
 	private final static Logger logger_ = LoggerFactory.getLogger(LabController.class);
 	
+    private Validator validator_ = Validation.buildDefaultValidatorFactory().getValidator();
+	
 
 	@RequestMapping(value="/labs")
-	public ModelAndView list()
+	public String list(ModelMap modelMap)
 	{
-		List<Lab> labs = labManager_.findLabs();
+		modelMap.put("labs", new Labs(labManager_.findLabs()));
 		
-		return new ModelAndView("lab/list", "labs", new Labs(labs));
+		return "/lab/list";
 	}
 	
     @RequestMapping(method = RequestMethod.GET, value="/lab/{labId}.xls")
-    public ModelAndView getXLS(@PathVariable Long labId, ModelMap modelMap, 
+    public String getXLS(@PathVariable Long labId, ModelMap modelMap, 
     						   HttpServletRequest request, HttpServletResponse response) throws IOException
-    						   {
-    	Lab lab = labManager_.findLabById(labId);
+    {
+    	modelMap.put("lab", labManager_.findLabById(labId));
     	
-    	return new ModelAndView("labExcelView", "lab", lab);
-    						   }
+    	return "labExcelView";
+    }
 
     @RequestMapping(value="/lab/{labId}")
-    public ModelAndView get(@PathVariable Long labId, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) throws IOException 
+    public String get(@PathVariable Long labId, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) throws IOException 
     {
-    	Lab lab = labManager_.findLabById(labId);
+    	modelMap.put("lab", labManager_.findLabById(labId));
     	
-    	return new ModelAndView("lab/show", "lab", lab);
+    	return "/lab/show";
     }
     
     
     @RequestMapping(value="/lab/new")
-    public ModelAndView createNew(HttpServletRequest request, HttpServletResponse response)
+    public String createNew(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap)
     {
-    	Lab lab = new Lab();
-    	
-    	return new ModelAndView("lab/new", "lab", lab);
+        modelMap.put("lab", new Lab());
+        return "/lab/new";
     }
     
     @RequestMapping(value="/lab", method = RequestMethod.POST, headers={"Content-Type=application/xml"})
     public String createXML(@RequestBody Lab lab, ModelMap modelMap, 
-    						HttpServletRequest request, HttpServletResponse response)
+    						HttpServletRequest request, HttpServletResponse response, 
+    						BindingResult result)
     throws IOException
     {
-    	lab = getLabManagerDAO().saveLab(lab);
-    	
-    	if ( lab.getId() != null )
-    	{
-    		modelMap.put("lab", lab);
-    		return "redirect:/lab/" + lab.getId();
-    	}
-    	else
-    	{
-    		response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not save the lab");
-    		return "error";
-    	}
+        return create(lab, modelMap, request, response, result);
+
     }
     
     @RequestMapping(value="/lab", method = RequestMethod.POST)
-    public ModelAndView create(@ModelAttribute("lab") Lab lab, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
+    public String create(@ModelAttribute("lab") Lab lab, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response,
+            BindingResult result) throws IOException
     {
-    	lab = getLabManagerDAO().saveLab(lab);
-    	
-    	if ( lab.getId() != null )
-    	{
-    		modelMap.put("lab", lab);
-    		return new ModelAndView("redirect:/lab/" + lab.getId());
-    	}
-    	else
-    	{
-    		logger_.error("There was an error saving the model");
-    		return new ModelAndView("/lab/new", "lab", lab);
-    	}
+        if ( SIMLEUtils.validateDomainObject(validator_, result, lab) )
+        {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Lab validation failed");
+            return "/lab/new";
+        }
+        
+        lab = labManager_.saveLab(lab);
+        
+        if ( lab.getId() != null )
+        {
+            modelMap.put("lab", lab);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            return "redirect:/lab/" + lab.getId();
+        }
+        else
+        {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not save the lab");
+            return "/lab/new";
+        }
     }
     
     @RequestMapping(method = RequestMethod.PUT, value = "/lab/{labId}")
@@ -140,8 +144,7 @@ public class LabController {
     	
     	if ( lab == null )
     	{
-    		response.getWriter().write("Could not find lab with ID: " + labId);
-    		response.getWriter().flush();
+    	    response.sendError(HttpServletResponse.SC_NOT_FOUND, "No lab found with id " + labId);
     		return;
     	}
     	
@@ -206,7 +209,8 @@ public class LabController {
 
 	private void addApplications(Element rdfRoot, Lab lab) 
 	{
-		for ( Application app : labManager_.findApplications() )
+	    List<Application> applications = labManager_.findApplications();
+		for ( Application app : applications )
 		{
 			Element appNode = rdfRoot.addElement(imlQname("Application")).addAttribute(rdfQname("about"), resourceLink(app.getName()));
 			appNode.addElement(imlQname("name")).setText(app.getName());
@@ -235,11 +239,11 @@ public class LabController {
 	}
 
 	@Autowired
-	public void setLabManagerDAO(LabManagerService labManagerDAO) {
-		labManager_ = labManagerDAO;
+	public void setLabManagerService(LabManagerService labManagerService) {
+		labManager_ = labManagerService;
 	}
 
-	public LabManagerService getLabManagerDAO() {
+	public LabManagerService getLabManagerService() {
 		return labManager_;
 	}
 	
@@ -255,6 +259,13 @@ public class LabController {
 	
 	private String resourceLink(String name)
 	{
-		return "#" + name.replaceAll("\\s", "_");
+	    if ( name == null )
+	    {
+	        return "#UNIDENTIFIED_RESOURCE";
+	    }
+	    else
+	    {
+	        return "#" + name.replaceAll("\\s", "_");
+	    }
 	}
 }

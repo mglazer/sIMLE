@@ -4,17 +4,24 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import jpl.simle.domain.Application;
 import jpl.simle.domain.Host;
 import jpl.simle.domain.HostApplication;
+import jpl.simle.domain.Lab;
 import jpl.simle.service.LabManagerService;
+import jpl.simle.utils.SIMLEUtils;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,81 +34,114 @@ public class HostController {
 
 	private LabManagerService labManager_;
 	
+	private Validator validator_ = Validation.buildDefaultValidatorFactory().getValidator();
+	
+	private final static Logger logger_ = LoggerFactory.getLogger(HostController.class);
+	
 	@RequestMapping(value="/lab/{labId}/hosts", method=RequestMethod.GET)
-	public ModelAndView list(@PathVariable Long labId)
+	public String list(@PathVariable Long labId, ModelMap modelMap)
 	{
-		List<Host> hosts = labManager_.findHosts(labId);
+		modelMap.addAttribute("hosts", labManager_.findHosts(labId));
 		
-		return new ModelAndView("host/list", "hosts", hosts);
+		return "/host/list";
 	}
 	
     @RequestMapping(value="/lab/{labId}/host/{hostId}", method=RequestMethod.GET)
-    public ModelAndView get(@PathVariable Long labId, 
+    public String get(@PathVariable Long labId, 
     			    @PathVariable Long hostId, 
     				ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
     {
-    	Host host = labManager_.findHost(labId, hostId);
-    	
-    	return new ModelAndView("host/show", "host", host);
+        modelMap.addAttribute("host", labManager_.findHost(labId, hostId));
+        return "/host/show";
     }
     
     @RequestMapping(value="/lab/{labId}/host/new")
-    public ModelAndView createNew(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
+    public String createNew(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
     {
-    	Host host = new Host();
-    	
-    	return new ModelAndView("/host/new", "host", host);
+        modelMap.addAttribute("host", new Host());
+    	return "/host/new";
     }
     
     @RequestMapping(method = RequestMethod.POST, value="/lab/{labId}/host", headers={"Content-Type=application/xml"})
     public String createXML(@PathVariable Long labId, @RequestBody Host host, ModelMap modelMap,
-    						HttpServletRequest request, HttpServletResponse response)
+    						HttpServletRequest request, HttpServletResponse response,
+    						BindingResult result)
     throws IOException
     {
+        if ( SIMLEUtils.validateDomainObject(validator_, result, host) )
+        {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not validate host");
+            return "/host/new";
+        }
+        
     	host = labManager_.saveHost(labId, host);
     	
     	if ( host.getId() != null )
     	{
-    		modelMap.put("host", host);
+    		modelMap.addAttribute("host", host);
     		return "redirect:/lab/" + labId + "/host/" + host.getId();
     	}
     	else
     	{
-    		modelMap.put("error", "There were errors creating the host");
     		response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not save the host");
-    		return "error";
+    		return "/lab/new";
     	}
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/lab/{labId}/host")
-    public ModelAndView create(@PathVariable Long labId,
+    public String create(@PathVariable Long labId,
     				 Host host,
-    			     ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
+    			     ModelMap modelMap, HttpServletRequest request, HttpServletResponse response,
+    			     BindingResult result) throws IOException 
     {
+        Lab lab = labManager_.findLabById(labId);
+        if ( lab == null )
+        {
+            result.reject("Couldn't find lab with ID: " + labId);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Could not find lab with id " + labId);
+            return "/host/new";
+        }
+        
+        host.setLab(lab);
+        if ( SIMLEUtils.validateDomainObject(validator_, result, host) )
+        {
+            System.out.println("Validation failed with " + result.getErrorCount());
+            System.out.println(result.getAllErrors());
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not validate host");
+            return "/host/new";
+        }
+        
+        System.out.println("Validation succeeded");
     	host = labManager_.saveHost(labId, host);
     	
     	if ( host.getId() != null )
     	{
-    		modelMap.put("host", host);
-    		return new ModelAndView("redirect:/lab/" + labId + "/host/" + host.getId());
+    		modelMap.addAttribute("host", host);
+    		response.setStatus(HttpServletResponse.SC_CREATED);
+    		return "redirect:/lab/" + labId + "/host/" + host.getId();
     	}
     	else
     	{
-    		return new ModelAndView("/lab/" + labId + "/host/new", "host", host);
+    	    logger_.info("Failed to save a new host");
+    	    result.reject("We didn't get an ID back when we tried to save the host. This is bad");
+    	    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    		return "/host/new";
     	}
     }
     
     @RequestMapping(method = RequestMethod.POST, value = "/lab/{labId}/host/{hostId}/addApplication")
-    public ModelMap addApplication(@PathVariable Long labId,
+    public void addApplication(@PathVariable Long labId,
     							   @PathVariable Long hostId,
-    							   @RequestParam(required=false) Long appId
+    							   @RequestParam(required=false) Long appId,
+    							   ModelMap modelMap
     								   )
     {
     	Host host = labManager_.findHost(labId, hostId);
     	
     	if ( host == null )
     	{
-    		return new ModelMap("error", "Could not find host with id " + hostId);
+    		modelMap.addAttribute("error", "Could not find host with id " + hostId);
+    		return;
     	}
     	
     	Application application = null;
@@ -114,7 +154,7 @@ public class HostController {
     	}
     	else
     	{
-    		List<Application> applications = Application.findApplicationEntries(0, 1);
+    		List<Application> applications = labManager_.findApplications();
     		if ( applications.size() > 0 )
     		{
     			application = applications.get(0);
@@ -123,79 +163,82 @@ public class HostController {
     	
     	if ( application == null )
     	{
-    		return new ModelMap("error", "Could not find application with id " + appId);
+    		modelMap.addAttribute("error", "Could not find application with id " + appId);
+    		return;
     	}
     	
     	HostApplication link = labManager_.createHostApplicationLink(application, host);
     	
     	List<Application> applications = labManager_.findApplications();
     	
-    	ModelMap modelMap = new ModelMap();
     	modelMap.addAttribute("applications", applications);
     	modelMap.addAttribute("linkId", link.getId());
-    	
-    	return modelMap;
     }
     
     @RequestMapping(method = RequestMethod.POST, value = "/lab/{labId}/host/{hostId}/updateApplicationLink/{linkId}")
-    public ModelMap updateApplicationConnection(@PathVariable Long labId,
+    public void updateApplicationConnection(@PathVariable Long labId,
     											@PathVariable Long hostId,
     											@PathVariable Long linkId,
     											@RequestParam Long appId,
-    											HttpServletRequest request)
+    											HttpServletRequest request,
+    											ModelMap modelMap)
     {
     	Host host = labManager_.findHost(labId, hostId);
     	
     	if ( host == null )
     	{
-    		return new ModelMap("error", "Could not find host with id " + hostId);
+    		modelMap.addAttribute("error", "Could not find host with id " + hostId);
+    		return;
     	}
     	
     	Application application = labManager_.findApplication(appId);
     	
     	if ( application == null )
     	{
-    		return new ModelMap("error", "Could not find application with id " + appId);
+    		modelMap.addAttribute("error", "Could not find application with id " + appId);
+    		return;
     	}
     	
     	HostApplication link = labManager_.findHostApplicationLink(linkId);
     	
     	if ( link == null )
     	{
-    		return new ModelMap("error", "Could not find host-application link with id " + linkId);
+    		modelMap.addAttribute("error", "Could not find host-application link with id " + linkId);
+    		return;
     	}
     	
     	labManager_.updateHostApplicationLink(link, application, host);
     	
-    	return new ModelMap("success", "Successfully updated link");
+    	modelMap.addAttribute("success", "Successfully updated link");
     }
     
     @RequestMapping(method = RequestMethod.POST, value = "/lab/{labId}/host/{hostId}/deleteApplicationLink/{linkId}")
-    public ModelMap deleteApplicationLink(@PathVariable Long labId,
+    public void deleteApplicationLink(@PathVariable Long labId,
     									  @PathVariable Long hostId,
-    									  @PathVariable Long linkId)
+    									  @PathVariable Long linkId,
+    									  ModelMap modelMap)
     {
     	Host host = labManager_.findHost(labId, hostId);
     	
     	if ( host == null )
     	{
-    		return new ModelMap("error", "Could not find host with id " + hostId);
+    	    modelMap.addAttribute("error", "Could not find host with id " + hostId);
     	}
     	
     	HostApplication link = labManager_.findHostApplicationLink(linkId);
     	
     	if ( link == null )
     	{
-    		return new ModelMap("error", "Could not find link with id " + linkId);
+    		modelMap.addAttribute("error", "Could not find link with id " + linkId);
     	}
     	
     	labManager_.deleteHostApplicationLink(link);
     	
-    	return new ModelMap("success", "Successfully deleted link");
+    	modelMap.addAttribute("success", "Successfully deleted link");
     }
     
     @Autowired
-    public void setLabManagerDAO(LabManagerService labManager)
+    public void setLabManagerService(LabManagerService labManager)
     {
     	labManager_ = labManager;
     }

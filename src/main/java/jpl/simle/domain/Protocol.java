@@ -20,6 +20,7 @@ import jpl.simle.domain.Application;
 import jpl.simle.domain.validator.IPAddress;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 
@@ -55,8 +56,10 @@ public class Protocol {
 
     private String ports;
 
+    @Pattern(regexp="\\w+", message="cannot contain special characters or spaces")
     private String networkProtocol;
 
+    @Pattern(regexp="\\w+", message="cannot contain special characters or spaces")
     private String applicationProtocol;
 
     private String notes;

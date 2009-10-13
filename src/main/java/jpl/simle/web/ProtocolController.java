@@ -3,15 +3,20 @@ package jpl.simle.web;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
+import jpl.simle.domain.Application;
 import jpl.simle.domain.Protocol;
 import jpl.simle.service.LabManagerService;
+import jpl.simle.utils.SIMLEUtils;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,69 +27,71 @@ import org.springframework.web.servlet.ModelAndView;
 public class ProtocolController {
 
 	private LabManagerService labManager_;
+	private Validator validator_ = Validation.buildDefaultValidatorFactory().getValidator();
 	
 	@RequestMapping(value="/application/{applicationId}/protocols", method=RequestMethod.GET)
-	public ModelAndView list(@PathVariable Long applicationId, 
+	public String list(@PathVariable Long applicationId, 
 							 ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
 	{
-		List<Protocol> protocols = labManager_.findProtocolsByApplicationId(applicationId);
-		
-		return new ModelAndView("application/list", "protocols", protocols);
+	    modelMap.put("protocols", labManager_.findProtocolsByApplicationId(applicationId));
+	    return "/protocol/list";
 	}
 	
     @RequestMapping(value="/application/{applicationId}/protocol/{protocolId}", method=RequestMethod.GET)
-    public ModelAndView get(@PathVariable Long applicationId, @PathVariable Long protocolId,
+    public String get(@PathVariable Long applicationId, @PathVariable Long protocolId,
     						ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
     {
-    	Protocol protocol = labManager_.findProtocol(applicationId, protocolId);
+    	modelMap.put("protocol", labManager_.findProtocol(applicationId, protocolId));
     	
-    	if ( protocol == null )
-    	{
-    		return new ModelAndView("redirect:error", "error", "No protocol found with appid " + applicationId + " and id " + protocolId);
-    	}
-    	
-    	return new ModelAndView("/protocol/show", "protocol", protocol);
+    	return "/protocol/show";
     }
     
     @RequestMapping(method = RequestMethod.POST, value = "/application/{applicationId}/protocol", headers={"Content-Type:application/xml"})
     public String createXML(@PathVariable Long applicationId, @RequestBody Protocol protocol, 
-    					 ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
+    					 ModelMap modelMap, HttpServletRequest request, HttpServletResponse response,
+    					 BindingResult result) 
     throws IOException
     {
+        return create(applicationId, protocol, modelMap, request, response, result);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/application/{applicationId}/protocol")
+    public String create(@PathVariable Long applicationId, Protocol protocol,
+    						 ModelMap modelMap, HttpServletRequest request, HttpServletResponse response,
+    						 BindingResult result) throws IOException 
+    {
+        Application application = labManager_.findApplication(applicationId);
+        if ( application == null )
+        {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "No application with ID " + applicationId + " exists");
+            return "/protocol/new";
+        }
+        
+        protocol.setApplication(application);
+        if ( SIMLEUtils.validateDomainObject(validator_, result, protocol) )
+        {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not validate protocol object");
+            return "/protocol/new";
+        }
+        
     	labManager_.saveProtocol(applicationId, protocol);
     	
     	if ( protocol.getId() != null )
     	{
     		modelMap.put("protocol", protocol);
+    		response.setStatus(HttpServletResponse.SC_CREATED);
     		return "redirect:/application/" + applicationId + "/protocol/" + protocol.getId();
     	}
     	else
     	{
-    		response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not save protocol");
-    		return "error";
-    	}
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/application/{applicationId}/protocol")
-    public ModelAndView create(@PathVariable Long applicationId, Protocol protocol,
-    						 ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) 
-    {
-    	labManager_.saveProtocol(applicationId, protocol);
-    	
-    	if ( protocol.getId() != null )
-    	{
-    		modelMap.put("protocol", protocol);
-    		return new ModelAndView("redirect:/application/" + applicationId + "/protocol/" + protocol.getId());
-    	}
-    	else
-    	{
-    		return new ModelAndView("/protocol/show", "protocol", protocol);
+    	    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    		return "/protocol/new";
     	}
     }
     
     @Autowired
-    public void setLabManagerDAO(LabManagerService labManagerDAO)
+    public void setLabManagerService(LabManagerService labManagerService)
     {
-    	labManager_ = labManagerDAO;
+    	labManager_ = labManagerService;
     }
 }

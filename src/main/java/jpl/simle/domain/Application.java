@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
+import javax.validation.constraints.Pattern;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,9 @@ import jpl.simle.domain.Protocol;
 import java.util.HashSet;
 import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Entity
 @RooJavaBean
@@ -44,21 +48,41 @@ public class Application {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "application")
     private Set<Protocol> protocols = new HashSet<Protocol>();
 
+    @NotNull
+    @Pattern(regexp = "[\\w\\s]+", message = "cannot be blank or contain special characters")
     private String name;
 
     private String notes;
 
+    @NotNull
     private String addedByUsername;
     
     public int hashCode()
     {
-    	return name.hashCode();
+        return new HashCodeBuilder()
+            .append(name)
+            .toHashCode();
     }
     
-    public boolean equals(Object other)
+    public boolean equals(Object obj)
     {
-    	Application app = (Application)other;
-    	return app.name.equals(this.name);
+        if ( obj == null )  
+        {
+            return false;
+        }
+        if ( obj == this )
+        {
+            return true;
+        }
+        if ( obj.getClass() != getClass() )
+        {
+            return false;
+        }
+        
+        Application rhs = (Application)obj;
+        return new EqualsBuilder()
+            .append(name, rhs.name)
+            .isEquals();
     }
     
     public void addProtocol(Protocol protocol)

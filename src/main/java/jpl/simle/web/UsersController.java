@@ -18,6 +18,7 @@ import javax.validation.Validator;
 import jpl.simle.domain.SIMLEUser;
 import jpl.simle.service.UserService;
 import jpl.simle.service.exception.OperationNotAllowedException;
+import jpl.simle.utils.SIMLEUtils;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +30,7 @@ public class UsersController
 
     private UserService userService_;
     
-    private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private Validator validator_ = Validation.buildDefaultValidatorFactory().getValidator();
     
     private final static Logger logger_ = LoggerFactory.getLogger(UsersController.class);
 
@@ -63,13 +64,8 @@ public class UsersController
         Assert.notNull(user, "User must be provided");
         
         userService_.setUsersGroup(user);
-        
-        for ( ConstraintViolation<SIMLEUser> constraint : validator.validate(user) ) 
-        {
-            result.rejectValue(constraint.getPropertyPath().toString(), "", constraint.getMessage());
-        }
-        
-        if ( result.hasErrors() )
+
+        if ( SIMLEUtils.validateDomainObject(validator_, result, user) )
         {
             return "user/new";
         }
@@ -94,12 +90,7 @@ public class UsersController
         
         userService_.setUsersGroup(user);
         
-        for ( ConstraintViolation<SIMLEUser> constraint : validator.validate(user) )
-        {
-            result.rejectValue(constraint.getPropertyPath().toString(), "", constraint.getMessage());
-        }
-        
-        if ( result.hasErrors() )
+        if ( SIMLEUtils.validateDomainObject(validator_, result, user) )
         {
             return "user/edit";
         }

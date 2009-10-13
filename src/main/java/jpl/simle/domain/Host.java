@@ -1,5 +1,6 @@
 package jpl.simle.domain;
 
+
 import javax.persistence.Entity;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -14,6 +15,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,6 +53,7 @@ public class Host {
     private Lab lab;
 
     @NotNull
+    @Pattern(regexp = "\\w+", message="should not contain special characters")
     @XStreamAlias("name")
     private String name;
 
