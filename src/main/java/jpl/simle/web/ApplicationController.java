@@ -94,12 +94,12 @@ public class ApplicationController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/application")
     public String create(@ModelAttribute("application") Application application, 
-                                ModelMap modelMap, HttpServletRequest request, HttpServletResponse response,
-                                BindingResult result) throws IOException 
+                                BindingResult result, ModelMap modelMap, HttpServletRequest request,
+                                HttpServletResponse response) throws IOException 
     {
         if ( SIMLEUtils.validateDomainObject(validator_, result, application) )
         {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Application validation failed");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "/application/new";
         }
         

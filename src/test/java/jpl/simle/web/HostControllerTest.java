@@ -109,7 +109,7 @@ public class HostControllerTest
         assertEquals(
                 "We should be able to create a host but got some errors: " + result.toString(),
                 "redirect:/lab/" + labId + "/host/" + host.getId(), 
-                controller.create(labId, host, modelMap, request, response, result));
+                controller.create(labId, host, result, modelMap, request, response));
         assertEquals(host, modelMap.get("host"));
         assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
     }
@@ -127,7 +127,7 @@ public class HostControllerTest
         Host host = new Host();
         BindingResult result = new BeanPropertyBindingResult(host, "host");
         assertEquals("/host/new", 
-                controller.create(labId, host, modelMap, request, response, result));
+                controller.create(labId, host, result, modelMap, request, response));
         assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
     }
     
@@ -146,7 +146,7 @@ public class HostControllerTest
         
         BindingResult result = new BeanPropertyBindingResult(host, "host");
         assertEquals("/host/new",
-                controller.create(labId, host, modelMap, request, response, result));
+                controller.create(labId, host, result, modelMap, request, response));
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
     }
     

@@ -60,7 +60,7 @@ public class Host {
     @XStreamAlias("dnsNames")
     private String dnsNames;
 
-    @IPAddress
+    //@IPAddress
     @XStreamAlias("addressIP")
     private String addressIP;
     

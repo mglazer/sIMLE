@@ -54,7 +54,8 @@ public class Application {
 
     private String notes;
 
-    @NotNull
+    // this should be not null, but we enforce this at the service layer
+    //@NotNull
     private String addedByUsername;
     
     public int hashCode()

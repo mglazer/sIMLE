@@ -98,17 +98,17 @@ public class LabController {
     						BindingResult result)
     throws IOException
     {
-        return create(lab, modelMap, request, response, result);
+        return create(lab, result, modelMap, request, response);
 
     }
     
     @RequestMapping(value="/lab", method = RequestMethod.POST)
-    public String create(@ModelAttribute("lab") Lab lab, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response,
-            BindingResult result) throws IOException
+    public String create(@ModelAttribute("lab") Lab lab, BindingResult result, ModelMap modelMap, HttpServletRequest request,
+            HttpServletResponse response) throws IOException
     {
         if ( SIMLEUtils.validateDomainObject(validator_, result, lab) )
         {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Lab validation failed");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "/lab/new";
         }
         
@@ -118,11 +118,12 @@ public class LabController {
         {
             modelMap.put("lab", lab);
             response.setStatus(HttpServletResponse.SC_CREATED);
+            logger_.info("Created new lab {}, redirecting to new lab URI", lab.getName());
             return "redirect:/lab/" + lab.getId();
         }
         else
         {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not save the lab");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "/lab/new";
         }
     }

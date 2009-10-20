@@ -96,7 +96,7 @@ public class ProtocolControllerTest
         
         BindingResult result = new BeanPropertyBindingResult(prot, "protocol");
         assertEquals("redirect:/application/" + appId + "/protocol/" + prot.getId(), 
-                controller.create(appId, prot, modelMap, request, response, result));
+                controller.create(appId, prot, result, modelMap, request, response));
         assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
         assertEquals(prot, modelMap.get("protocol"));
     }
@@ -111,7 +111,7 @@ public class ProtocolControllerTest
         }});
         
         assertEquals("/protocol/new", 
-                controller.create(appId, null, modelMap, request, response, null));
+                controller.create(appId, null, null, modelMap, request, response));
         assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
     }
     
@@ -130,7 +130,7 @@ public class ProtocolControllerTest
         
         BindingResult result = new BeanPropertyBindingResult(prot, "protocol");
         assertEquals("/protocol/new",
-                controller.create(appId, prot, modelMap, request, response, result));
+                controller.create(appId, prot, result, modelMap, request, response));
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
     }
 

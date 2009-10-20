@@ -152,6 +152,11 @@
 		}).blur(function() {
 			$(this).removeClass("highlight");
 		});
+		$("#host_name").blur(function() {
+			if ( $("#host_dnsNames").val().length == 0 ) {
+				$("#host_dnsNames").val($("#host_name").val());
+			}
+		});
 		
 	});
 
@@ -180,17 +185,17 @@
 	</table>
 	
 	<security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
-	<fieldset>
+	<fieldset id="hostFieldset">
 	<legend>Add Host</legend>
 	<c:url value="/lab/${lab.id}/host/" var="create_host_url"/>
 	<form id="hostForm" action="${create_host_url}" method="POST">
 		<dl>
 			<dd><label for="name">Host Name:</label></dd>
-			<dt><input type="text" name="name"/></dt>
+			<dt><input type="text" id="host_name" name="name"/></dt>
 			<dd><label for="dnsNames">DNS Names:</label></dd>
-			<dt><input type="text" name="dnsNames"/></dt>
+			<dt><input type="text" id="host_dnsNames" name="dnsNames"/></dt>
 			<dd><label for="addressIP">IP:</label></dd>
-			<dt><input type="text" name="addressIP"/></dt>
+			<dt><input type="text" id="host_addressIP" name="addressIP"/></dt>
 		</dl>
 		<div class="buttons">
 			<input type="submit" value="Add Host"/>
@@ -200,6 +205,6 @@
 	</security:authorize>
 		
 </c:if>
-<c:if test="${empty lab}">No lab found with this id.</c:if>
+<c:if test="${empty lab}">No test facility found with this id.</c:if>
 </div>
 <jsp:directive.include file="/WEB-INF/jsp/footer.jsp"/>

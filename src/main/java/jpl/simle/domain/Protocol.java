@@ -49,17 +49,19 @@ public class Protocol {
     @JoinColumn
     private Application application;
 
-    @IPAddress
+    //@IPAddress
     private String destinationIP;
 
     private String direction;
 
     private String ports;
 
-    @Pattern(regexp="\\w+", message="cannot contain special characters or spaces")
+    @NotNull
+    @Pattern(regexp="^\\w+$", message="cannot contain special characters or spaces")
     private String networkProtocol;
 
-    @Pattern(regexp="\\w+", message="cannot contain special characters or spaces")
+    @NotNull
+    @Pattern(regexp="^\\w+$", message="cannot contain special characters or spaces")
     private String applicationProtocol;
 
     private String notes;

@@ -2,7 +2,7 @@
 	<li>
 	<c:url value="/labs" var="list_lab_url"/>
 	<c:url value="/static/images/labs.png" var="list_lab_image_url"/>
-	<a href="${list_lab_url}"><img src="${list_lab_image_url}" alt="List Labs"/><span>Labs</span></a>
+	<a href="${list_lab_url}"><img src="${list_lab_image_url}" alt="List Labs"/><span>Test Facilities</span></a>
 	</li>
 	<li>
 	<c:url value="/applications" var="list_application_url"/>

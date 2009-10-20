@@ -95,7 +95,7 @@ public class TestUsers
 		lab.setName("ITEC");
 		lab.setGroupName(group.getGroupName());
 		lab.setLatitude(new Double(34.1205));
-		lab.setLongitude(new Double(119.1035));
+		lab.setLongitude(new Double(-119.1035));
 		lab.setDomainName("domain.itec.com");
 		
 		lab.persist();

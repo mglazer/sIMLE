@@ -84,7 +84,7 @@
 <security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
 <div class="buttons">
 	<c:url value="/lab/new" var="new_lab_url"/>
-	<a href="${new_lab_url}" class="create">Create New Lab</a>
+	<a href="${new_lab_url}" class="create">Create New Test Facility</a>
 </div>
 </security:authorize>
 

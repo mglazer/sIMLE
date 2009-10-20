@@ -23,6 +23,7 @@ import jpl.simle.domain.Lab;
 import jpl.simle.service.LabManagerService;
 import jpl.simle.utils.SIMLEUtils;
 
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,50 +69,32 @@ public class HostController {
     						BindingResult result)
     throws IOException
     {
-        if ( SIMLEUtils.validateDomainObject(validator_, result, host) )
-        {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not validate host");
-            return "/host/new";
-        }
-        
-    	host = labManager_.saveHost(labId, host);
-    	
-    	if ( host.getId() != null )
-    	{
-    		modelMap.addAttribute("host", host);
-    		return "redirect:/lab/" + labId + "/host/" + host.getId();
-    	}
-    	else
-    	{
-    		response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not save the host");
-    		return "/lab/new";
-    	}
+        return create(labId, host, result, modelMap, request, response);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/lab/{labId}/host")
     public String create(@PathVariable Long labId,
-    				 Host host,
-    			     ModelMap modelMap, HttpServletRequest request, HttpServletResponse response,
-    			     BindingResult result) throws IOException 
+    				 @ModelAttribute("host") Host host,
+    			     BindingResult result, ModelMap modelMap, HttpServletRequest request,
+    			     HttpServletResponse response) throws IOException 
     {
         Lab lab = labManager_.findLabById(labId);
         if ( lab == null )
         {
             result.reject("Couldn't find lab with ID: " + labId);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Could not find lab with id " + labId);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return "/host/new";
         }
         
         host.setLab(lab);
         if ( SIMLEUtils.validateDomainObject(validator_, result, host) )
         {
-            System.out.println("Validation failed with " + result.getErrorCount());
-            System.out.println(result.getAllErrors());
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not validate host");
+            logger_.error("Validation failed with " + result.getErrorCount());
+            logger_.error("Errors: {}", result.getAllErrors());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "/host/new";
         }
         
-        System.out.println("Validation succeeded");
     	host = labManager_.saveHost(labId, host);
     	
     	if ( host.getId() != null )

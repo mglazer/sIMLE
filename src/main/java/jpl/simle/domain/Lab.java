@@ -43,7 +43,8 @@ public class Lab {
     @XStreamAlias("hosts")
     private Set<Host> hosts = new HashSet<Host>();
 
-    @NotNull
+    // this should be not null, but we are going to enforce this at the service layer
+    //@NotNull
     @XStreamAlias("groupName")
     private String groupName;
 

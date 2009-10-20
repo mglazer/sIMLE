@@ -52,25 +52,25 @@ public class ProtocolController {
     					 BindingResult result) 
     throws IOException
     {
-        return create(applicationId, protocol, modelMap, request, response, result);
+        return create(applicationId, protocol, result, modelMap, request, response);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/application/{applicationId}/protocol")
     public String create(@PathVariable Long applicationId, Protocol protocol,
-    						 ModelMap modelMap, HttpServletRequest request, HttpServletResponse response,
-    						 BindingResult result) throws IOException 
+    						 BindingResult result, ModelMap modelMap, HttpServletRequest request,
+    						 HttpServletResponse response) throws IOException 
     {
         Application application = labManager_.findApplication(applicationId);
         if ( application == null )
         {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "No application with ID " + applicationId + " exists");
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return "/protocol/new";
         }
         
         protocol.setApplication(application);
         if ( SIMLEUtils.validateDomainObject(validator_, result, protocol) )
         {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not validate protocol object");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "/protocol/new";
         }
         

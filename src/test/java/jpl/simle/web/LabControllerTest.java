@@ -124,7 +124,7 @@ public class LabControllerTest
         assertEquals(
                 "We should save without errors, but there were some: " + result.getAllErrors(),
                 "redirect:/lab/" + labId, 
-                controller.create(lab, modelMap, request, response, result));
+                controller.create(lab, result, modelMap, request, response));
         assertEquals(lab, modelMap.get("lab"));
         assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
     }
@@ -142,7 +142,7 @@ public class LabControllerTest
         }});
         
         BindingResult result = new BeanPropertyBindingResult(lab, "lab");
-        assertEquals("/lab/new", controller.create(lab, modelMap, request, response, result));
+        assertEquals("/lab/new", controller.create(lab, result, modelMap, request, response));
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
     }
     

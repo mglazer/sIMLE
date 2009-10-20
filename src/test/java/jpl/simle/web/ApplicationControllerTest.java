@@ -135,7 +135,7 @@ public class ApplicationControllerTest
         }});
         
         BindingResult result = new BeanPropertyBindingResult(app, "application");
-        assertEquals("redirect:/application/" + app.getId(), controller.create(app, modelMap, request, response, result));
+        assertEquals("redirect:/application/" + app.getId(), controller.create(app, result, modelMap, request, response));
         assertEquals(app, modelMap.get("application"));
         assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
         
@@ -147,7 +147,7 @@ public class ApplicationControllerTest
         final Application app = new Application();
         
         BindingResult result = new BeanPropertyBindingResult(app, "application");
-        assertEquals("/application/new", controller.create(app, modelMap, request, response, result));
+        assertEquals("/application/new", controller.create(app, result, modelMap, request, response));
         assertEquals("Will fail because application name is empty", HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
     }
     
