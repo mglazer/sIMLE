@@ -2,6 +2,10 @@ package jpl.simle.service.impl;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -11,11 +15,13 @@ import jpl.simle.domain.SIMLEUser;
 import jpl.simle.service.AuthenticationService;
 import jpl.simle.service.UserService;
 import jpl.simle.service.exception.OperationNotAllowedException;
+import jpl.simle.utils.SIMLEUtils;
 
 public class UserServiceImpl implements UserService
 {
 
     private AuthenticationService authenticationService_;
+    private final static Logger logger_ = LoggerFactory.getLogger(UserServiceImpl.class);
     
     public SIMLEUser findGroupUser(String username)
     {
@@ -27,6 +33,7 @@ public class UserServiceImpl implements UserService
         if ( user.getVersion() == null )
         {
             setUsersGroup(user);
+            encryptPassword(user);
             user.persist();
 
             Authority roleGroupAdmin = new Authority();
@@ -48,6 +55,7 @@ public class UserServiceImpl implements UserService
         if ( user.getVersion() == null )
         {
             setUsersGroup(user);
+            encryptPassword(user);
             user.persist();
 
             Authority roleUser = new Authority();
@@ -79,7 +87,8 @@ public class UserServiceImpl implements UserService
         if ( group.getId() != null )
         {
             group.persist();
-        } else
+        } 
+        else
         {
             group.merge();
         }
@@ -96,7 +105,7 @@ public class UserServiceImpl implements UserService
 
     public SIMLEUser getAuthenticatedUser()
     {
-        return SIMLEUser.findUserByUsername(getAuthenticatedUsername());
+        return authenticationService_.getAuthenticatedUser();
     }
 
     public String getAuthenticatedUsername()
@@ -106,7 +115,7 @@ public class UserServiceImpl implements UserService
 
     public SIMLEGroup getAuthenticatedUserGroup()
     {
-        return getAuthenticatedUser().getGroup();
+        return authenticationService_.getAuthenticatedUserGroup();
     }
 
     public void remove(SIMLEUser user) throws OperationNotAllowedException
@@ -122,6 +131,55 @@ public class UserServiceImpl implements UserService
     public void setUsersGroup(SIMLEUser user)
     {
         user.setGroup(getAuthenticatedUserGroup());
+    }
+
+    public SIMLEUser saveEventAdminUser(SIMLEUser user)
+    {
+        if ( user.getVersion() == null )
+        {
+            SIMLEGroup eventAdminGroup = getEventAdminGroup();
+            user.setGroup(eventAdminGroup);
+            encryptPassword(user);
+            user.persist();
+            
+            Authority roleEventAdmin = new Authority();
+            roleEventAdmin.setAuthority(Authority.AuthorityTypes.ROLE_EVENT_ADMIN);
+            roleEventAdmin.setUsername(user.getUsername());
+            
+            roleEventAdmin.persist();
+        }
+        else
+        {
+            user.merge();
+        }
+        
+        return user;
+    }
+    
+    private SIMLEGroup getEventAdminGroup()
+    {
+        SIMLEGroup group = null;
+        try
+        {
+            group = SIMLEGroup.findGroupByGroupName(SIMLEGroup.EVENT_ADMIN_GROUP);
+        }
+        catch ( NoResultException nre )
+        {
+            logger_.info("We couldn't find the event admin group {}, we'll create it.", SIMLEGroup.EVENT_ADMIN_GROUP);
+            group = new SIMLEGroup();
+            group.setGroupName(SIMLEGroup.EVENT_ADMIN_GROUP);
+            group.persist();
+        }
+        
+        return group;
+    }
+    
+    private SIMLEUser encryptPassword(SIMLEUser user)
+    {
+        String salt = SIMLEUtils.getRandomHexString(32);
+        user.setSalt(salt);
+        user.setPassword(authenticationService_.encryptPassword(user.getPassword(), salt));
+        return user;
     }
 
 }

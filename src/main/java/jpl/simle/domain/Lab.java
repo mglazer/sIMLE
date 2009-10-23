@@ -32,7 +32,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("lab")
 @JsonAutoDetect(JsonMethod.NONE)
 @RooEntity(finders = { "findLabsByNameEquals", "findLabsByGroupNameEquals" })
-public class Lab {
+public class Lab implements DomainObject
+{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

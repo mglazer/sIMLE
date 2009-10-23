@@ -1,6 +1,8 @@
 package jpl.simle.domain;
 
 import javax.persistence.Entity;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -11,29 +13,48 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 @Entity
-@RooEntity
 @RooJavaBean
 @RooToString
-@Table(name="authorities")
+@Table(name = "authorities")
+@RooEntity(finders = { "findAuthoritysByUsernameEquals" })
 public class Authority {
-	
-	public enum AuthorityTypes 
-	{
-		ROLE_USER,
-		ROLE_GROUP_ADMIN,
-		ROLE_ADMIN
-	}
-	
-    @Column(name="username")
+
+    public enum AuthorityTypes {
+
+        ROLE_USER, ROLE_GROUP_ADMIN, ROLE_ADMIN, ROLE_EVENT_ADMIN
+    }
+
+    @Column(name = "username")
     private String username;
-    
+
     @NotNull
-    @Column(name="authority")
+    @Column(name = "authority")
     private String authority;
+
+    public void setAuthority(AuthorityTypes authority) {
+        this.authority = authority.toString();
+    }
     
-    
-    public void setAuthority(AuthorityTypes authority)
+    public boolean equals(Object obj)
     {
-    	this.authority = authority.toString();
+        if ( obj == null )  
+        {
+            return false;
+        }
+        if ( obj == this )
+        {
+            return true;
+        }
+        if ( obj.getClass() != getClass() )
+        {
+            return false;
+        }
+        
+        Authority auth = (Authority)obj;
+        
+        return new EqualsBuilder()
+            .append(username, auth.username)
+            .append(authority, auth.authority)
+            .isEquals();
     }
 }

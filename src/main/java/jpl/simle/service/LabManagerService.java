@@ -10,6 +10,7 @@ import jpl.simle.domain.Protocol;
 import jpl.simle.domain.SIMLEUser;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.model.Permission;
 
 public interface LabManagerService {
 
@@ -19,13 +20,22 @@ public interface LabManagerService {
 	public abstract Lab findLabById(Long id);
 
 	public abstract List<Lab> findLabs();
+	
+	@PreAuthorize("hasPermission(#lab, admin)")
+	public abstract void addPermission(Lab lab, String recipientUsername, Permission permission);
+	
+	@PreAuthorize("hasPermission(#lab, admin)")
+	public abstract void deletePermission(Lab lab, String recipientUsername, Permission permission);
 
 	public abstract Host findHost(Long labId, Long hostId);
 
 	public abstract List<Host> findHosts(Long labId);
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')")
+	@PreAuthorize("hasPermission(#labId, 'jpl.simle.domain.Lab', admin)")
 	public abstract Host saveHost(Long labId, Host host);
+	
+	@PreAuthorize("hasPermission(#lab, admin)")
+	public abstract Host saveHost(Lab lab, Host host);
 
 	public abstract Application findApplication(Long applicationId);
 

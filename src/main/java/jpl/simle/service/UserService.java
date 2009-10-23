@@ -24,6 +24,9 @@ public interface UserService
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public abstract SIMLEGroup saveGroup(SIMLEGroup group);
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public abstract SIMLEUser saveEventAdminUser(SIMLEUser user);
 	
 	public abstract void setAuthenticationService(AuthenticationService authenticationService);
 	
@@ -36,6 +39,7 @@ public interface UserService
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')")
     public List<SIMLEUser> findCurrentGroupMembers();
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')")
 	public void remove(SIMLEUser user) throws OperationNotAllowedException;
 	
 	public void setUsersGroup(SIMLEUser user);

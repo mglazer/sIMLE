@@ -30,4 +30,12 @@ privileged aspect SIMLEUser_Roo_JavaBean {
         this.group = group;        
     }    
     
+    public String SIMLEUser.getSalt() {    
+        return this.salt;        
+    }    
+    
+    public void SIMLEUser.setSalt(String salt) {    
+        this.salt = salt;        
+    }    
+    
 }

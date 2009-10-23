@@ -20,6 +20,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.util.Assert;
 
 public class LabManagerServiceImpl implements LabManagerService 
 {
@@ -27,6 +40,7 @@ public class LabManagerServiceImpl implements LabManagerService
 	private	transient javax.persistence.EntityManager entityManager_;
 	
 	private UserService userService_;
+	private AuthenticationService authenticationService_;
 
 	private final Logger logger_ = LoggerFactory.getLogger(getClass());
 	
@@ -47,6 +61,7 @@ public class LabManagerServiceImpl implements LabManagerService
 		if ( lab.getId() != null )
 		{
 			lab.persist();
+			addPermission(lab, new PrincipalSid(getUsername()), BasePermission.ADMINISTRATION);
 		}
 		else
 		{
@@ -131,19 +146,23 @@ public class LabManagerServiceImpl implements LabManagerService
 			throw new NoResultException("No lab found with id " + labId);
 		}
 		
-		
-		if ( host.getId() == null )
-		{
-			lab.addHost(host);
-			host.persist();
-		}
-		else
-		{
-			host.merge();
-		}
-		
-		
-		return host;
+		return saveHost(lab, host);
+	}
+	
+	public Host saveHost(Lab lab, Host host)
+	{
+        Assert.notNull(lab);
+        if ( host.getId() == null )
+        {
+            lab.addHost(host);
+            host.persist();
+        } 
+        else
+        {
+            host.merge();
+        }
+
+        return host;
 	}
 	
 	
@@ -308,6 +327,11 @@ public class LabManagerServiceImpl implements LabManagerService
 		return userService_.getAuthenticatedUsername();
 	}
 	
+	protected String getGroupName()
+	{
+	    return userService_.getAuthenticatedUserGroup().getGroupName();
+	}
+	
 	protected SIMLEUser getAuthenticatedUser()
 	{
 		return SIMLEUser.findUserByUsername(getUsername());
@@ -326,6 +350,38 @@ public class LabManagerServiceImpl implements LabManagerService
     {
         userService_ = userService;
     }
+	
+	@Autowired
+	public void setAuthenticationService(AuthenticationService authenticationService)
+	{
+	    authenticationService_ = authenticationService;
+	}
+	
+	
+	/*
+	 *******************************************
+	 * ACL Functionality
+	 *******************************************/
+	
+	public void addPermission(Lab lab, String recipientUsername, Permission permission)
+	{
+	    addPermission(lab, new PrincipalSid(recipientUsername), permission);
+	}
+	
+	private void addPermission(Lab lab, Sid recipient, Permission permission)
+	{
+	    authenticationService_.addPermission(Lab.class, lab, recipient, permission);
+	}
 
+    public void deletePermission(Lab lab, String recipientUsername,
+            Permission permission)
+    {
+        deletePermission(lab, new PrincipalSid(recipientUsername), permission);
+    }
+    
+    public void deletePermission(Lab lab, Sid recipient, Permission permission)
+    {
+        authenticationService_.deletePermission(Lab.class, lab, recipient, permission);
+    }
 
 }

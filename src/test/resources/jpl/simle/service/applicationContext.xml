@@ -25,7 +25,13 @@
 <property name="dataSource" ref="dataSource"/>
 </bean>
 
-	<bean id="authenticationService" class="jpl.simle.service.impl.AuthenticationServiceImpl"/>
+	<bean id="authenticationService" class="jpl.simle.service.impl.AuthenticationServiceImpl">
+		<property name="passwordEncoder">
+			<bean class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+				<constructor-arg value="256"/>
+			</bean>
+		</property>
+	</bean>
 	<bean id="labManagerService" class="jpl.simle.service.impl.LabManagerServiceImpl">
 	</bean>
 	<bean id="userService" class="jpl.simle.service.impl.UserServiceImpl"></bean>

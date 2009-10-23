@@ -21,6 +21,16 @@
 		<form:checkbox id="_enabled" checked="true" path="enabled"/>
 		<form:errors path="enabled" cssClass="errors"/>
 	</div>
+	<c:if test="${not empty user.acceptableCreatableUserTypes}">
+	<div id="user_type">
+		<label for="_type">Type:</label>
+		<form:select id="_type" path="userType">
+			<c:forEach var="t" items="${user.acceptableCreatableUserTypes}">
+			<form:option value="${t}">${t.value}</form:option>
+			</c:forEach>
+		</form:select>
+	</div>
+	</c:if>
 	<div class="submit" id="user_submit">
 		<input id="proceed" type="submit" value="Save" />
 	</div>

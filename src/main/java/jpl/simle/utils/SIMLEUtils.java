@@ -1,15 +1,19 @@
 package jpl.simle.utils;
 
+import java.util.Random;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.validation.BindingResult;
 
 import jpl.simle.domain.SIMLEUser;
 
 public class SIMLEUtils
 {
+    private final static Random rnd_ = new Random();
 
     /**
      * Validate a domain object. It must have JPA annotations attached to it. 
@@ -36,5 +40,12 @@ public class SIMLEUtils
         }
         
         return result.hasErrors();
+    }
+    
+    public static String getRandomHexString(int length)
+    {
+        byte[] randomChars = new byte[length];
+        rnd_.nextBytes(randomChars);
+        return new String(Base64.encodeBase64(randomChars)).substring(0, length);
     }
 }

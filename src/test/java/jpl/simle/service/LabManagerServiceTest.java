@@ -1,4 +1,4 @@
-package jpl.simle.dao;
+package jpl.simle.service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -37,14 +37,15 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"applicationContext.xml"})
+@ContextConfiguration({"applicationContext.xml","applicationContext-acl.xml"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class LabManagerDAOTest
+public class LabManagerServiceTest
 {
 	private LabManagerService labManager_;
 	private Mockery context = new JUnit4Mockery();
 	private UserService userService;
+	private AuthenticationService authenticationService;
 
 	@Autowired
 	public void setLabManagerService(LabManagerService labManager)
@@ -56,6 +57,7 @@ public class LabManagerDAOTest
 	public void setUp()
 	{
 	    userService = context.mock(UserService.class);
+	    authenticationService = context.mock(AuthenticationService.class);
 	    
 	    final SIMLEUser user = new SIMLEUser();
 	    user.setUsername("TEST_USER");
