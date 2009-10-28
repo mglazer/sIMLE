@@ -1,5 +1,7 @@
 package jpl.simle.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.validation.ConstraintViolation;
@@ -47,5 +49,10 @@ public class SIMLEUtils
         byte[] randomChars = new byte[length];
         rnd_.nextBytes(randomChars);
         return new String(Base64.encodeBase64(randomChars)).substring(0, length);
+    }
+    
+    public static <T> List<T> createList()
+    {
+        return new ArrayList<T>();
     }
 }

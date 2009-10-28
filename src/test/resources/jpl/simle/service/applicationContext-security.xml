@@ -6,26 +6,10 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
-	<global-method-security pre-post-annotations="enabled">
+	<global-method-security pre-post-annotations="enabled" access-decision-manager-ref="accessDecisionManagerBean">
 		<expression-handler ref="expressionHandler"/>
 	</global-method-security>
 	
-    <http auto-config="true">
-    	<form-login login-processing-url="/static/j_spring_security_check" 
-    				login-page="/static/login.jsp" 
-    				default-target-url="/labs" 
-    				authentication-failure-url="/static/login.jsp?login_error=t"/>
-    	<http-basic/>
-    	<remember-me data-source-ref="dataSource"/>
-        <logout logout-url="/static/j_spring_security_logout"/>
-        <!-- 
-        <intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>
-        <intercept-url pattern="/member/**" access="IS_AUTHENTICATED_REMEMBERED" />
-        -->
-        <intercept-url pattern="/resources/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/static/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/**" access="IS_AUTHENTICATED_REMEMBERED" />
-    </http>
 
 	<authentication-manager alias="authenticationManager">
 	    <authentication-provider user-service-ref="userDetailsService">
@@ -46,6 +30,38 @@
 		</authentication-provider>
 	</authentication-manager>
 	
+	
+	<!-- 
+		We have to modify the AccessDecisionManager from the default one that is created because the default one
+		only uses a RoleVoter. We want to extend this to use the RoleHierarchyVoter because it makes the code
+		slightly cleaner. Anything that a ROLE_GROUP_ADMIN has access to a ROLE_ADMIN should also have access to,
+		so the RoleHierarchyVoter prevents has from having to type in:
+		
+		hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')
+		
+		everywhere throughout our access code.
+	 -->
+	<beans:bean id="accessDecisionManagerBean" class="org.springframework.security.access.vote.AffirmativeBased">
+		<beans:property name="decisionVoters">
+			<beans:list>
+				<beans:bean class="org.springframework.security.access.vote.RoleHierarchyVoter">
+					<beans:constructor-arg ref="roleHierarchy"/>
+				</beans:bean>
+				<beans:bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="roleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+		<beans:property name="hierarchy">
+			<beans:value>
+				ROLE_ADMIN > ROLE_GROUP_ADMIN
+				ROLE_GROUP_ADMIN > ROLE_USER
+				ROLE_USER > IS_AUTHENTICATED_ANONYMOUSLY
+			</beans:value>
+		</beans:property>
+	</beans:bean>
+	
 	<beans:bean id="userDetailsService" class="jpl.simle.service.impl.SIMLEUserDetailsService">
 	</beans:bean>
 
@@ -65,5 +81,8 @@
 		<beans:constructor-arg ref="aclService"/>
 	</beans:bean>
 	
+	<beans:bean id="webSecurityExpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+		<beans:property name="roleHierarchy" ref="roleHierarchy"/>
+	</beans:bean>
 
 </beans:beans>

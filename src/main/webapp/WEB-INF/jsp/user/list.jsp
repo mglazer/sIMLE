@@ -34,7 +34,7 @@
 						type="image" value="Show User" />
 					</form:form>
 				</td>
-				<security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
+				<security:authorize access="hasRole('ROLE_GROUP_ADMIN')">
 				<td>
 					<c:url value="/user/${user.id}/edit" var="update_form_url" />
 					<c:url value="/static/images/update.png" var="update_image_url" /> 
@@ -59,7 +59,7 @@
 	</table>
 </c:if> <c:if test="${empty users}">No Users found. This is a problem because if no users exist, then how do you?.</c:if></div>
 
-<security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
+<security:authorize access="hasRole('ROLE_GROUP_ADMIN')">
 <div class="buttons">
 	<c:url value="/user/new" var="new_user_url"/>
 	<a href="${new_user_url}" class="create">Create New User</a>

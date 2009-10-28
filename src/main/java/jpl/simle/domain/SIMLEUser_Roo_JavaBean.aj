@@ -2,6 +2,7 @@ package jpl.simle.domain;
 
 import java.lang.Boolean;
 import java.lang.String;
+import java.util.Date;
 import jpl.simle.domain.SIMLEGroup;
 
 privileged aspect SIMLEUser_Roo_JavaBean {
@@ -36,6 +37,14 @@ privileged aspect SIMLEUser_Roo_JavaBean {
     
     public void SIMLEUser.setSalt(String salt) {    
         this.salt = salt;        
+    }    
+    
+    public Date SIMLEUser.getExpirationDate() {    
+        return this.expirationDate;        
+    }    
+    
+    public void SIMLEUser.setExpirationDate(Date expirationDate) {    
+        this.expirationDate = expirationDate;        
     }    
     
 }

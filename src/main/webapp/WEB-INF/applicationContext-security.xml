@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+	<global-method-security pre-post-annotations="enabled" access-decision-manager-ref="accessDecisionManagerBean">
+		<expression-handler ref="expressionHandler"/>
+	</global-method-security>
+	
+    <http auto-config="true" access-decision-manager-ref="accessDecisionManagerBean">
+    	<form-login login-processing-url="/static/j_spring_security_check" 
+    				login-page="/static/login.jsp" 
+    				default-target-url="/labs" 
+    				authentication-failure-url="/static/login.jsp?login_error=t"/>
+    	<http-basic/>
+    	<remember-me data-source-ref="dataSource"/>
+        <logout logout-url="/static/j_spring_security_logout"/>
+        <!-- 
+        <intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>
+        <intercept-url pattern="/member/**" access="IS_AUTHENTICATED_REMEMBERED" />
+        -->
+        <intercept-url pattern="/resources/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/static/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/**" access="IS_AUTHENTICATED_REMEMBERED" />
+    </http>
+
+	<authentication-manager alias="authenticationManager">
+	    <authentication-provider user-service-ref="userDetailsService">
+	    	<password-encoder ref="passwordEncoder">
+	    		<salt-source ref="saltSource" />
+	    	</password-encoder>
+	    	<!-- 
+	    	<jdbc-user-service data-source-ref="dataSource"/>
+	    	-->
+	    	<!-- SHA-256 values can be produced using 'echo -n your_desired_password | sha256sum' (using normal *nix environments) -->
+	    	<!-- 
+	    	<password-encoder hash="sha-256"/>
+	        <user-service>
+	            <user name="admin" password="8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918" authorities="ROLE_ADMIN"/>
+		        <user name="user" password="5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8" authorities="ROLE_USER"/>
+		    </user-service>
+		    -->
+		</authentication-provider>
+	</authentication-manager>
+	
+	
+	<!-- 
+		We have to modify the AccessDecisionManager from the default one that is created because the default one
+		only uses a RoleVoter. We want to extend this to use the RoleHierarchyVoter because it makes the code
+		slightly cleaner. Anything that a ROLE_GROUP_ADMIN has access to a ROLE_ADMIN should also have access to,
+		so the RoleHierarchyVoter prevents has from having to type in:
+		
+		hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')
+		
+		everywhere throughout our access code.
+	 -->
+	<beans:bean id="accessDecisionManagerBean" class="org.springframework.security.access.vote.AffirmativeBased">
+		<beans:property name="decisionVoters">
+			<beans:list>
+				<beans:bean class="org.springframework.security.access.vote.RoleHierarchyVoter">
+					<beans:constructor-arg ref="roleHierarchy"/>
+				</beans:bean>
+				<beans:bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+			</beans:list>
+		</beans:property>
+		<!-- Note: This is currently wrong! We need to handle this correctly but right now RoleHierarchyVoter
+			doesn't work with expressions so I need to find out how to make it work with expressions and the
+			RoleHierarchyImpl
+		 -->
+		<beans:property name="allowIfAllAbstainDecisions" value="true" />
+	</beans:bean>
+	
+	<beans:bean id="roleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+		<beans:property name="hierarchy">
+			<beans:value>
+				ROLE_ADMIN > ROLE_GROUP_ADMIN
+				ROLE_GROUP_ADMIN > ROLE_USER
+				ROLE_USER > IS_AUTHENTICATED_ANONYMOUSLY
+			</beans:value>
+		</beans:property>
+	</beans:bean>
+	
+	<!--  Automatically receives AuthenticationEvent messages -->
+	<beans:bean id="loggerListener" class="org.springframework.security.authentication.event.LoggerListener"/>
+	
+	<beans:bean id="userDetailsService" class="jpl.simle.service.impl.SIMLEUserDetailsService">
+	</beans:bean>
+
+	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+		<beans:constructor-arg value="256"/>
+	</beans:bean>	
+	
+	<beans:bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+		<beans:property name="userPropertyToUse" value="salt"/>
+	</beans:bean>
+		
+	<beans:bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+		<beans:property name="permissionEvaluator" ref="permissionEvaluator"/>
+		<beans:property name="roleHierarchy" ref="roleHierarchy"/>
+	</beans:bean>
+	
+	<beans:bean id="permissionEvaluator" class="org.springframework.security.acls.AclPermissionEvaluator">
+		<beans:constructor-arg ref="aclService"/>
+		<beans:property name="sidRetrievalStrategy" ref="sidRetrievalStrategy"/>
+	</beans:bean>
+	
+	<!-- 
+		This is necessary for the security:authorize tag to work. Spring searches for a bean of type
+		WebSecurityExpressionHandler and then registers that with the authentication tag.
+	 -->
+	<beans:bean id="webSecurityExpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+		<beans:property name="roleHierarchy" ref="roleHierarchy"/>
+	</beans:bean>
+	
+	<!-- 
+		ExpressionBasedPreInvocationAdvice is needed for preinvocation handling based on expressions
+		We plug this into the PreInvocationAuthorizationAdviceVoter above
+	 -->
+	 <beans:bean id="preInvocationAdvice" class="org.springframework.security.access.expression.method.ExpressionBasedPreInvocationAdvice">
+	 	<beans:property name="expressionHandler" ref="expressionHandler"/>
+	 </beans:bean>
+	 
+	 <!-- 
+	 	Supply a role hierarchy to the SidRetrievalStrategy
+	  -->
+	  <beans:bean id="sidRetrievalStrategy" class="org.springframework.security.acls.domain.SidRetrievalStrategyImpl">
+	  	<beans:constructor-arg ref="roleHierarchy"/>
+	  </beans:bean>
+
+</beans:beans>

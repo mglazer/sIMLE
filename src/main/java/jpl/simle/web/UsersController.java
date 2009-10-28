@@ -37,7 +37,8 @@ public class UsersController
     @RequestMapping(value = "/users", method=RequestMethod.GET)
     public String list(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
     {
-        modelMap.addAttribute("users", userService_.findCurrentGroupMembers());
+        modelMap.addAttribute("users", userService_.findAuthorizedUsers());
+        logger_.debug("Returning users");
         return "user/list";
     }
 

@@ -9,11 +9,11 @@
 	<c:url value="/static/images/applications.png" var="list_application_image_url"/>
 	<a href="${list_application_url}"><img src="${list_application_image_url}" alt="List Applications"/><span>Applications</span></a>
 	</li>
-	<security:authorize ifAllGranted="ROLE_GROUP_ADMIN">
+	<security:authorize access="hasRole('ROLE_GROUP_ADMIN')">
 	<li>
 	<c:url value="/users" var="list_users_url"/>
 	<c:url value="/static/images/user.png" var="list_users_image_url"/>
 	<a href="${list_users_url}"><img src="${list_users_image_url}" alt="List Users"/><span>Users</span></a>
 	</li>
-</security:authorize>
+	</security:authorize>
 </ul>

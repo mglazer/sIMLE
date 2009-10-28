@@ -31,6 +31,7 @@ import javax.sql.DataSource;
 
 import jpl.simle.service.AuthenticationService;
 import jpl.simle.service.LabManagerService;
+import jpl.simle.service.UserService;
 import jpl.simle.service.impl.AuthenticationServiceImpl;
 import jpl.simle.utils.SIMLEUtils;
 
@@ -41,6 +42,8 @@ public class DataSourcePopulator
 	private LabManagerService labManager;
 	@Autowired
 	private AuthenticationService authenticationService;
+	@Autowired
+	private UserService userService;
 	
 	private JdbcTemplate template;
 	private TransactionTemplate tt;
@@ -130,29 +133,11 @@ public class DataSourcePopulator
 	    
 	    String salt = SIMLEUtils.getRandomHexString(32);
 	    
+	    SIMLEGroup group = new SIMLEGroup();
+	    group.setGroupName("itec");
+	    group.persist();
 	    
-	    // create ITEC user
-	    // username: itecuser password: password
-		SIMLEUser user = new SIMLEUser();
-		user.setUsername("itecuser");
-		user.setPassword(authenticationService.encryptPassword("password", salt));
-		user.setSalt(salt);
-		user.setEnabled(true);
-		
-		SIMLEGroup group = new SIMLEGroup();
-		group.setGroupName("itec");
-		
-		group.persist();
-		
-		user.setGroup(group);
-		
-		Authority roleUser = new Authority();
-		roleUser.setUsername(user.getUsername());
-		roleUser.setAuthority(Authority.AuthorityTypes.ROLE_USER);
-		
-		user.persist();
-		roleUser.persist();
-		
+	    
 		// create itec admin user
 		// username: itecadmin password: password
 		
@@ -188,7 +173,7 @@ public class DataSourcePopulator
 		superAdminUser.setGroup(adminGroup);
 		
 		Authority roleSuperAdmin = new Authority();
-		roleSuperAdmin.setUsername(adminUser.getUsername());
+		roleSuperAdmin.setUsername(superAdminUser.getUsername());
 		roleSuperAdmin.setAuthority(Authority.AuthorityTypes.ROLE_ADMIN);
 		
 		superAdminUser.persist();
@@ -198,6 +183,19 @@ public class DataSourcePopulator
 		// setup an authentication context temporarily
 		Authentication authRequest = new UsernamePasswordAuthenticationToken("itecadmin", adminUser.getPassword(), AuthorityUtils.createAuthorityList("ROLE_GROUP_ADMIN"));
 		SecurityContextHolder.getContext().setAuthentication(authRequest);
+		
+	    // create ITEC user
+        // username: itecuser password: password
+        SIMLEUser user = new SIMLEUser();
+        user.setUsername("itecuser");
+        // user service automatically encrypts our password
+        user.setPassword("password");
+        user.setSalt(salt);
+        user.setEnabled(true);
+        
+        userService.saveGroupUser(user);
+        
+        System.out.println("**************************** " + user.getId() + "************ " + user.getGroup() + "************************");
 
 		// create a new lab for testing
 		Lab lab = new Lab();

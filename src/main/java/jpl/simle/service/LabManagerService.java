@@ -14,7 +14,7 @@ import org.springframework.security.acls.model.Permission;
 
 public interface LabManagerService {
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_GROUP_ADMIN')")
 	public abstract Lab saveLab(Lab lab);
 
 	public abstract Lab findLabById(Long id);
@@ -39,16 +39,16 @@ public interface LabManagerService {
 
 	public abstract Application findApplication(Long applicationId);
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_GROUP_ADMIN')")
 	public abstract Application saveApplication(Application application);
 
 	public abstract List<Application> findApplications();
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_GROUP_ADMIN')")
 	public abstract HostApplication createHostApplicationLink(
 			Application application, Host host);
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_GROUP_ADMIN')")
 	public abstract HostApplication updateHostApplicationLink(
 			HostApplication link, Application application, Host host);
 
@@ -56,17 +56,17 @@ public interface LabManagerService {
 
 	public abstract List<HostApplication> findHostApplicationsForHost(Host host);
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_GROUP_ADMIN')")
 	public abstract void deleteHostApplicationLink(HostApplication link);
 
 	public abstract List<Protocol> findProtocolsByApplicationId(Long id);
 
 	public abstract Protocol findProtocol(Long applicationId, Long protocolId);
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_GROUP_ADMIN')")
 	public abstract Protocol saveProtocol(Long appId, Protocol protocol);
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GROUP_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_GROUP_ADMIN')")
 	public abstract Protocol saveProtocol(Application app, Protocol protocol);
 	
 	public abstract void setUserService(UserService userService);

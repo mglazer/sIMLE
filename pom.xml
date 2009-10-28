@@ -119,6 +119,11 @@
 			<artifactId>org.springframework.aspects</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.expression</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
 	<dependency>
 <groupId>org.hsqldb</groupId>
 <artifactId>com.springsource.org.hsqldb</artifactId>
@@ -232,6 +237,8 @@
 	<artifactId>spring-oxm</artifactId>
 	<version>1.5.8</version>
 </dependency>
+
+<!-- Spring security -->
 <dependency>
 <groupId>org.springframework.security</groupId>
 <artifactId>spring-security-core</artifactId>
@@ -242,6 +249,23 @@
     <artifactId>spring-security-taglibs</artifactId>
     <version>${spring.security.version}</version>
 </dependency>
+<dependency>
+	<groupId>org.springframework.security</groupId>
+	<artifactId>spring-security-acl</artifactId>
+	<version>${spring.security.version}</version>
+</dependency>
+<dependency>
+	<groupId>org.springframework.security</groupId>
+	<artifactId>spring-security-web</artifactId>
+	<version>${spring.security.version}</version>
+</dependency>
+<dependency>
+	<groupId>org.springframework.security</groupId>
+	<artifactId>spring-security-config</artifactId>
+	<version>${spring.security.version}</version>
+</dependency>
+
+<!-- Marshalling support -->
     <dependency>
     	<groupId>com.thoughtworks.xstream</groupId>
     	<artifactId>xstream</artifactId>
@@ -271,11 +295,6 @@
 	<groupId>net.sourceforge.jexcelapi</groupId>
 	<artifactId>jxl</artifactId>
 	<version>2.6.10</version>
-</dependency>
-<dependency>
-	<groupId>org.springframework.security</groupId>
-	<artifactId>spring-security-config</artifactId>
-	<version>${spring.security.version}</version>
 </dependency>
 <dependency>
 <groupId>javax.validation</groupId>
@@ -311,11 +330,6 @@
 	<groupId>commons-lang</groupId>
 	<artifactId>commons-lang</artifactId>
 	<version>2.4</version>
-</dependency>
-<dependency>
-	<groupId>org.springframework.security</groupId>
-	<artifactId>spring-security-acl</artifactId>
-	<version>${spring.security.version}</version>
 </dependency>
 </dependencies>
 

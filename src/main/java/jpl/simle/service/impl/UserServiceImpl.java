@@ -7,16 +7,22 @@ import javax.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import jpl.simle.domain.Authority;
 import jpl.simle.domain.SIMLEGroup;
 import jpl.simle.domain.SIMLEUser;
+import jpl.simle.security.acls.GroupSid;
 import jpl.simle.service.AuthenticationService;
 import jpl.simle.service.UserService;
 import jpl.simle.service.exception.OperationNotAllowedException;
 import jpl.simle.utils.SIMLEUtils;
 
+@Transactional
 public class UserServiceImpl implements UserService
 {
 
@@ -25,7 +31,7 @@ public class UserServiceImpl implements UserService
     
     public SIMLEUser findGroupUser(String username)
     {
-        return SIMLEUser.findSIMLEUser(username);
+        return SIMLEUser.findUserByUsername(username);
     }
 
     public SIMLEUser saveGroupAdminUser(SIMLEUser user)
@@ -62,6 +68,8 @@ public class UserServiceImpl implements UserService
             roleUser.setUsername(user.getUsername());
             roleUser.setAuthority(Authority.AuthorityTypes.ROLE_USER);
             roleUser.persist();
+            
+            authenticationService_.addPermission(SIMLEUser.class, user, new GroupSid(user.getGroup()), BasePermission.ADMINISTRATION);
         } 
         else
         {
@@ -180,6 +188,13 @@ public class UserServiceImpl implements UserService
         user.setSalt(salt);
         user.setPassword(authenticationService_.encryptPassword(user.getPassword(), salt));
         return user;
+    }
+
+    @Transactional(readOnly=true)
+    public List<SIMLEUser> findAuthorizedUsers()
+    {
+        logger_.info("************************ FIND AUTHORIZED USERS***************************");
+        return SIMLEUser.findAllSIMLEUsers();
     }
 
 }

@@ -1,5 +1,7 @@
 package jpl.simle.domain;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -33,6 +35,12 @@ public class Authority {
 
     public void setAuthority(AuthorityTypes authority) {
         this.authority = authority.toString();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static List<Authority> findAuthoritiesByUsername(String username)
+    {
+        return (List<Authority>) findAuthoritysByUsernameEquals(username).getResultList();
     }
     
     public boolean equals(Object obj)

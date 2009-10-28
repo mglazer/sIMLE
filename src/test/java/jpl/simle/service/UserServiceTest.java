@@ -2,9 +2,12 @@ package jpl.simle.service;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
+
 import jpl.simle.domain.Authority;
 import jpl.simle.domain.SIMLEGroup;
 import jpl.simle.domain.SIMLEUser;
+import jpl.simle.security.acls.GroupSid;
 import jpl.simle.service.exception.OperationNotAllowedException;
 import jpl.simle.service.impl.UserServiceImpl;
 
@@ -16,19 +19,24 @@ import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"applicationContext.xml","applicationContext-acl.xml"})
+@ContextConfiguration({"applicationContext.xml","applicationContext-acl.xml","applicationContext-security.xml"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class UserServiceTest
+public class UserServiceTest implements ApplicationContextAware
 {
     private UserService userService_;
     private AuthenticationService authenticationService_;
+    private ApplicationContext context_;
     private Mockery context = new JUnit4Mockery();
 
     private SIMLEUser adminUser;
@@ -90,17 +98,19 @@ public class UserServiceTest
     @Test
     public void shouldSaveGroupUser()
     {
+        final SIMLEUser user = new SIMLEUser();
+        user.setUsername("test_user");
+        user.setPassword("password");
+        user.setEnabled(true);
+        
         context.checking(new Expectations() {{
             oneOf (authenticationService_).getAuthenticatedUserGroup();
                 will(returnValue(adminGroup));
             oneOf (authenticationService_).encryptPassword(with(equal("password")), with(any(String.class)));
                 will(returnValue("encrypted_password"));
+            oneOf (authenticationService_).addPermission(SIMLEUser.class, user, new GroupSid(adminGroup), BasePermission.ADMINISTRATION);
         }});
         
-        SIMLEUser user = new SIMLEUser();
-        user.setUsername("test_user");
-        user.setPassword("password");
-        user.setEnabled(true);
         
         assertNotNull(userService_.saveGroupUser(user));
         
@@ -156,7 +166,7 @@ public class UserServiceTest
         assertEquals("changed_group_name", adminGroup.getGroupName());
     }
     
-    @Test
+    @Test(expected=NoResultException.class)
     public void shouldRemoveUser() throws OperationNotAllowedException
     {
         context.checking(new Expectations() {{
@@ -166,7 +176,7 @@ public class UserServiceTest
         
         userService_.remove(adminUser);
         
-        assertNull(userService_.findGroupUser(adminUser.getUsername()));
+        userService_.findGroupUser(adminUser.getUsername());
     }
     
     @Test(expected=OperationNotAllowedException.class)
@@ -208,6 +218,34 @@ public class UserServiceTest
         groupUser.setUsername(user.getUsername());
         groupUser.setAuthority(Authority.AuthorityTypes.ROLE_EVENT_ADMIN);
         assertTrue(auths.contains(groupUser));
+    }
+    
+    /*
+    @Test
+    public void shouldOnlyRetrieveAuthorizedUsers()
+    {
+        SIMLEUser authorizedUser = new SIMLEUser();
+        authorizedUser.setUsername("authorized");
+        authorizedUser.setEnabled(true);
+        authorizedUser.setPassword("password");
+        
+        SIMLEUser unauthorizedUser = new SIMLEUser();
+        unauthorizedUser.setUsername("unauthorized");
+        unauthorizedUser.setEnabled(true);
+        unauthorizedUser.setPassword("password");
+        
+        // just for this case, we actually need to use the authentication service implementation because
+        // otherwise the post filters on the service methods will not work properly
+        userService_.setAuthenticationService((AuthenticationService) context_.getBean("authenticationService"));
+        
+        userService_.saveGroupUser(user)
+    }
+    */
+
+    public void setApplicationContext(ApplicationContext applicationContext)
+            throws BeansException
+    {
+        context_ = applicationContext;
     }
 
 }

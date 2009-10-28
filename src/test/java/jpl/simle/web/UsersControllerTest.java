@@ -46,7 +46,7 @@ public class UsersControllerTest
     public void shouldListUsers()
     {
         context.checking(new Expectations() {{
-            oneOf (userService).findCurrentGroupMembers();
+            oneOf (userService).findAuthorizedUsers();
         }});
         assertEquals("user/list", controller.list(modelMap, request, response));
         assertNotNull(modelMap.get("users"));
