@@ -1,23 +1,20 @@
 package jpl.simle.domain;
 
-import jpl.simle.domain.SIMLEGroup;
-import jpl.simle.domain.SIMLEUser;
-
 privileged aspect GroupMember_Roo_JavaBean {
     
-    public SIMLEGroup GroupMember.getGroup() {    
+    public jpl.simle.domain.SIMLEGroup GroupMember.getGroup() {    
         return this.group;        
     }    
     
-    public void GroupMember.setGroup(SIMLEGroup group) {    
+    public void GroupMember.setGroup(jpl.simle.domain.SIMLEGroup group) {    
         this.group = group;        
     }    
     
-    public SIMLEUser GroupMember.getUser() {    
+    public jpl.simle.domain.SIMLEUser GroupMember.getUser() {    
         return this.user;        
     }    
     
-    public void GroupMember.setUser(SIMLEUser user) {    
+    public void GroupMember.setUser(jpl.simle.domain.SIMLEUser user) {    
         this.user = user;        
     }    
     

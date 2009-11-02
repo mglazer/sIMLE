@@ -1,55 +1,42 @@
 package jpl.simle.domain;
 
-import java.lang.Integer;
-import java.lang.Long;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
-import jpl.simle.domain.HostApplication;
-import org.springframework.transaction.annotation.Transactional;
-
 privileged aspect HostApplication_Roo_Entity {
     
-    @PersistenceContext    
-    transient EntityManager HostApplication.entityManager;    
+    @javax.persistence.PersistenceContext    
+    transient javax.persistence.EntityManager HostApplication.entityManager;    
     
-    @Id    
-    @GeneratedValue(strategy = GenerationType.AUTO)    
-    @Column(name = "id")    
-    private Long HostApplication.id;    
+    @javax.persistence.Id    
+    @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)    
+    @javax.persistence.Column(name = "id")    
+    private java.lang.Long HostApplication.id;    
     
-    @Version    
-    @Column(name = "version")    
-    private Integer HostApplication.version;    
+    @javax.persistence.Version    
+    @javax.persistence.Column(name = "version")    
+    private java.lang.Integer HostApplication.version;    
     
-    public Long HostApplication.getId() {    
+    public java.lang.Long HostApplication.getId() {    
         return this.id;        
     }    
     
-    public void HostApplication.setId(Long id) {    
+    public void HostApplication.setId(java.lang.Long id) {    
         this.id = id;        
     }    
     
-    public Integer HostApplication.getVersion() {    
+    public java.lang.Integer HostApplication.getVersion() {    
         return this.version;        
     }    
     
-    public void HostApplication.setVersion(Integer version) {    
+    public void HostApplication.setVersion(java.lang.Integer version) {    
         this.version = version;        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void HostApplication.persist() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.persist(this);        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void HostApplication.remove() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         if (this.entityManager.contains(this)) {        
@@ -60,13 +47,13 @@ privileged aspect HostApplication_Roo_Entity {
         }        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void HostApplication.flush() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.flush();        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void HostApplication.merge() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         HostApplication merged = this.entityManager.merge(this);        
@@ -74,8 +61,8 @@ privileged aspect HostApplication_Roo_Entity {
         this.id = merged.getId();        
     }    
     
-    public static EntityManager HostApplication.entityManager() {    
-        EntityManager em = new HostApplication().entityManager;        
+    public static javax.persistence.EntityManager HostApplication.entityManager() {    
+        javax.persistence.EntityManager em = new HostApplication().entityManager;        
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");        
         return em;        
     }    
@@ -84,16 +71,16 @@ privileged aspect HostApplication_Roo_Entity {
         return (Long) entityManager().createQuery("select count(o) from HostApplication o").getSingleResult();        
     }    
     
-    public static List<HostApplication> HostApplication.findAllHostApplications() {    
+    public static java.util.List<jpl.simle.domain.HostApplication> HostApplication.findAllHostApplications() {    
         return entityManager().createQuery("select o from HostApplication o").getResultList();        
     }    
     
-    public static HostApplication HostApplication.findHostApplication(Long id) {    
+    public static jpl.simle.domain.HostApplication HostApplication.findHostApplication(java.lang.Long id) {    
         if (id == null) throw new IllegalArgumentException("An identifier is required to retrieve an instance of HostApplication");        
         return entityManager().find(HostApplication.class, id);        
     }    
     
-    public static List<HostApplication> HostApplication.findHostApplicationEntries(int firstResult, int maxResults) {    
+    public static java.util.List<jpl.simle.domain.HostApplication> HostApplication.findHostApplicationEntries(int firstResult, int maxResults) {    
         return entityManager().createQuery("select o from HostApplication o").setFirstResult(firstResult).setMaxResults(maxResults).getResultList();        
     }    
     

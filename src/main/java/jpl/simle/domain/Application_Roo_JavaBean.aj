@@ -1,40 +1,36 @@
 package jpl.simle.domain;
 
-import java.lang.String;
-import java.util.Set;
-import jpl.simle.domain.Protocol;
-
 privileged aspect Application_Roo_JavaBean {
     
-    public Set<Protocol> Application.getProtocols() {    
+    public java.util.Set<jpl.simle.domain.Protocol> Application.getProtocols() {    
         return this.protocols;        
     }    
     
-    public void Application.setProtocols(Set<Protocol> protocols) {    
+    public void Application.setProtocols(java.util.Set<jpl.simle.domain.Protocol> protocols) {    
         this.protocols = protocols;        
     }    
     
-    public String Application.getName() {    
+    public java.lang.String Application.getName() {    
         return this.name;        
     }    
     
-    public void Application.setName(String name) {    
+    public void Application.setName(java.lang.String name) {    
         this.name = name;        
     }    
     
-    public String Application.getNotes() {    
+    public java.lang.String Application.getNotes() {    
         return this.notes;        
     }    
     
-    public void Application.setNotes(String notes) {    
+    public void Application.setNotes(java.lang.String notes) {    
         this.notes = notes;        
     }    
     
-    public String Application.getAddedByUsername() {    
+    public java.lang.String Application.getAddedByUsername() {    
         return this.addedByUsername;        
     }    
     
-    public void Application.setAddedByUsername(String addedByUsername) {    
+    public void Application.setAddedByUsername(java.lang.String addedByUsername) {    
         this.addedByUsername = addedByUsername;        
     }    
     

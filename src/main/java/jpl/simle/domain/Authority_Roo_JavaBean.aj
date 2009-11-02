@@ -1,22 +1,20 @@
 package jpl.simle.domain;
 
-import java.lang.String;
-
 privileged aspect Authority_Roo_JavaBean {
     
-    public String Authority.getUsername() {    
+    public java.lang.String Authority.getUsername() {    
         return this.username;        
     }    
     
-    public void Authority.setUsername(String username) {    
+    public void Authority.setUsername(java.lang.String username) {    
         this.username = username;        
     }    
     
-    public String Authority.getAuthority() {    
+    public java.lang.String Authority.getAuthority() {    
         return this.authority;        
     }    
     
-    public void Authority.setAuthority(String authority) {    
+    public void Authority.setAuthority(java.lang.String authority) {    
         this.authority = authority;        
     }    
     

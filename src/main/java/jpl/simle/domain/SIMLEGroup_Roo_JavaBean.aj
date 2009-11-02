@@ -1,14 +1,12 @@
 package jpl.simle.domain;
 
-import java.lang.String;
-
 privileged aspect SIMLEGroup_Roo_JavaBean {
     
-    public String SIMLEGroup.getGroupName() {    
+    public java.lang.String SIMLEGroup.getGroupName() {    
         return this.groupName;        
     }    
     
-    public void SIMLEGroup.setGroupName(String groupName) {    
+    public void SIMLEGroup.setGroupName(java.lang.String groupName) {    
         this.groupName = groupName;        
     }    
     

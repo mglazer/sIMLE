@@ -1,55 +1,42 @@
 package jpl.simle.domain;
 
-import java.lang.Integer;
-import java.lang.Long;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
-import jpl.simle.domain.SIMLEUser;
-import org.springframework.transaction.annotation.Transactional;
-
 privileged aspect SIMLEUser_Roo_Entity {
     
-    @PersistenceContext    
-    transient EntityManager SIMLEUser.entityManager;    
+    @javax.persistence.PersistenceContext    
+    transient javax.persistence.EntityManager SIMLEUser.entityManager;    
     
-    @Id    
-    @GeneratedValue(strategy = GenerationType.AUTO)    
-    @Column(name = "id")    
-    private Long SIMLEUser.id;    
+    @javax.persistence.Id    
+    @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)    
+    @javax.persistence.Column(name = "id")    
+    private java.lang.Long SIMLEUser.id;    
     
-    @Version    
-    @Column(name = "version")    
-    private Integer SIMLEUser.version;    
+    @javax.persistence.Version    
+    @javax.persistence.Column(name = "version")    
+    private java.lang.Integer SIMLEUser.version;    
     
-    public Long SIMLEUser.getId() {    
+    public java.lang.Long SIMLEUser.getId() {    
         return this.id;        
     }    
     
-    public void SIMLEUser.setId(Long id) {    
+    public void SIMLEUser.setId(java.lang.Long id) {    
         this.id = id;        
     }    
     
-    public Integer SIMLEUser.getVersion() {    
+    public java.lang.Integer SIMLEUser.getVersion() {    
         return this.version;        
     }    
     
-    public void SIMLEUser.setVersion(Integer version) {    
+    public void SIMLEUser.setVersion(java.lang.Integer version) {    
         this.version = version;        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void SIMLEUser.persist() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.persist(this);        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void SIMLEUser.remove() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         if (this.entityManager.contains(this)) {        
@@ -60,13 +47,13 @@ privileged aspect SIMLEUser_Roo_Entity {
         }        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void SIMLEUser.flush() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.flush();        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void SIMLEUser.merge() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         SIMLEUser merged = this.entityManager.merge(this);        
@@ -74,8 +61,8 @@ privileged aspect SIMLEUser_Roo_Entity {
         this.id = merged.getId();        
     }    
     
-    public static EntityManager SIMLEUser.entityManager() {    
-        EntityManager em = new SIMLEUser().entityManager;        
+    public static javax.persistence.EntityManager SIMLEUser.entityManager() {    
+        javax.persistence.EntityManager em = new SIMLEUser().entityManager;        
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");        
         return em;        
     }    
@@ -84,16 +71,16 @@ privileged aspect SIMLEUser_Roo_Entity {
         return (Long) entityManager().createQuery("select count(o) from SIMLEUser o").getSingleResult();        
     }    
     
-    public static List<SIMLEUser> SIMLEUser.findAllSIMLEUsers() {    
+    public static java.util.List<jpl.simle.domain.SIMLEUser> SIMLEUser.findAllSIMLEUsers() {    
         return entityManager().createQuery("select o from SIMLEUser o").getResultList();        
     }    
     
-    public static SIMLEUser SIMLEUser.findSIMLEUser(Long id) {    
+    public static jpl.simle.domain.SIMLEUser SIMLEUser.findSIMLEUser(java.lang.Long id) {    
         if (id == null) throw new IllegalArgumentException("An identifier is required to retrieve an instance of SIMLEUser");        
         return entityManager().find(SIMLEUser.class, id);        
     }    
     
-    public static List<SIMLEUser> SIMLEUser.findSIMLEUserEntries(int firstResult, int maxResults) {    
+    public static java.util.List<jpl.simle.domain.SIMLEUser> SIMLEUser.findSIMLEUserEntries(int firstResult, int maxResults) {    
         return entityManager().createQuery("select o from SIMLEUser o").setFirstResult(firstResult).setMaxResults(maxResults).getResultList();        
     }    
     

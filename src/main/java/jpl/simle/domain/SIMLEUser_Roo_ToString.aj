@@ -1,26 +1,24 @@
 package jpl.simle.domain;
 
-import java.lang.String;
-
 privileged aspect SIMLEUser_Roo_ToString {
     
-    public String SIMLEUser.toString() {    
+    public java.lang.String SIMLEUser.toString() {    
         StringBuilder sb = new StringBuilder();        
-        sb.append("Username: ").append(getUsername()).append(", ");        
-        sb.append("UserType: ").append(getUserType()).append(", ");        
-        sb.append("AcceptableCreatableUserTypes: ").append(java.util.Arrays.toString(getAcceptableCreatableUserTypes())).append(", ");        
-        sb.append("Authorities: ").append(getAuthorities() == null ? "null" : getAuthorities().size()).append(", ");        
-        sb.append("AccountNonExpired: ").append(isAccountNonExpired()).append(", ");        
-        sb.append("AccountNonLocked: ").append(isAccountNonLocked()).append(", ");        
-        sb.append("CredentialsNonExpired: ").append(isCredentialsNonExpired()).append(", ");        
-        sb.append("Enabled: ").append(getEnabled()).append(", ");        
-        sb.append("Id: ").append(getId()).append(", ");        
-        sb.append("Version: ").append(getVersion()).append(", ");        
-        sb.append("Password: ").append(getPassword()).append(", ");        
-        sb.append("Enabled: ").append(getEnabled()).append(", ");        
-        sb.append("Group: ").append(getGroup()).append(", ");        
-        sb.append("Salt: ").append(getSalt());        
-        sb.append("ExpirationDate: ").append(getExpirationDate());        
+        sb.append("username: ").append(getUsername()).append(", ");        
+        sb.append("userType: ").append(getUserType()).append(", ");        
+        sb.append("acceptableCreatableUserTypes: ").append(java.util.Arrays.toString(getAcceptableCreatableUserTypes())).append(", ");        
+        sb.append("authorities: ").append(getAuthorities() == null ? "null" : getAuthorities().size()).append(", ");        
+        sb.append("accountNonExpired: ").append(isAccountNonExpired()).append(", ");        
+        sb.append("accountNonLocked: ").append(isAccountNonLocked()).append(", ");        
+        sb.append("credentialsNonExpired: ").append(isCredentialsNonExpired()).append(", ");        
+        sb.append("enabled: ").append(getEnabled()).append(", ");        
+        sb.append("id: ").append(getId()).append(", ");        
+        sb.append("version: ").append(getVersion()).append(", ");        
+        sb.append("password: ").append(getPassword()).append(", ");        
+        sb.append("enabled: ").append(getEnabled()).append(", ");        
+        sb.append("group: ").append(getGroup()).append(", ");        
+        sb.append("salt: ").append(getSalt());        
+        sb.append("expirationDate: ").append(getExpirationDate());        
         return sb.toString();        
     }    
     

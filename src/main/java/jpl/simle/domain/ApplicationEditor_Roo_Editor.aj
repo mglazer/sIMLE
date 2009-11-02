@@ -1,38 +1,32 @@
 package jpl.simle.domain;
 
-import java.beans.PropertyEditorSupport;
-import java.lang.Long;
-import java.lang.String;
-import jpl.simle.domain.Application;
-import org.springframework.beans.SimpleTypeConverter;
-
 privileged aspect ApplicationEditor_Roo_Editor {
     
-    declare parents: ApplicationEditor implements PropertyEditorSupport;    
+    declare parents: ApplicationEditor implements java.beans.PropertyEditorSupport;    
     
-    private SimpleTypeConverter ApplicationEditor.typeConverter = new SimpleTypeConverter();    
+    org.springframework.beans.SimpleTypeConverter ApplicationEditor.typeConverter = new org.springframework.beans.SimpleTypeConverter();    
     
-    public String ApplicationEditor.getAsText() {    
+    public java.lang.String ApplicationEditor.getAsText() {    
         Object obj = getValue();        
         if (obj == null) {        
             return null;            
         }        
-        return (String) typeConverter.convertIfNecessary(((Application) obj).getId(), String.class);        
+        return (String) typeConverter.convertIfNecessary(((jpl.simle.domain.Application) obj).getId() , String.class);        
     }    
     
-    public void ApplicationEditor.setAsText(String text) {    
+    public void ApplicationEditor.setAsText(java.lang.String text) {    
         if (text == null || 0 == text.length()) {        
             setValue(null);            
             return;            
         }        
         
-        Long identifier = (Long) typeConverter.convertIfNecessary(text, Long.class);        
+        java.lang.Long identifier = (java.lang.Long) typeConverter.convertIfNecessary(text, java.lang.Long.class);        
         if (identifier == null) {        
             setValue(null);            
             return;            
         }        
         
-        setValue(Application.findApplication(identifier));        
+        setValue(jpl.simle.domain.Application.findApplication(identifier));        
     }    
     
 }

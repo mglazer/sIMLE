@@ -199,7 +199,7 @@ public class LabController {
     		nodeDevice.addAttribute(imlQname("about"), resourceLink(host.getName()));
     		
     		nodeDevice.addElement(imlQname("name")).setText(host.getName());
-    		nodeDevice.addElement(imlQname("locatedAt")).addAttribute(rdfQname("about"), resourceLink(lab.getDomainName()));
+    		nodeDevice.addElement(imlQname("locatedAt")).addAttribute(rdfQname("resource"), resourceLink(lab.getDomainName()));
     		
     		for ( HostApplication ha : labManager_.findHostApplicationsForHost(host) )
     		{
@@ -218,7 +218,7 @@ public class LabController {
 			
 			for ( Protocol protocol : app.getProtocols() )
 			{
-				Element useProtocolElement = appNode.addElement(imlQname("UseProtocol")).addAttribute(rdfQname("about"), resourceLink(protocol.getApplicationProtocol()));
+				Element useProtocolElement = appNode.addElement(imlQname("hasProtocol")).addAttribute(rdfQname("resource"), resourceLink(protocol.getApplicationProtocol()));
 				Element linkElement = useProtocolElement.addElement(imlQname("MultiDirectionalLink")).addAttribute(rdfQname("about"), resourceLink(protocol.getNetworkProtocol()));
 				
 				for ( Integer port : protocol.getPortsList() )

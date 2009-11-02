@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+    xmlns:iml="http://www.jpl.nasa.gov/pbm/ontology/iml#">
+    <iml:Location rdf:about="#domain.itec.com">
+        <iml:name>ITEC</iml:name>
+        <geo:lat>34.1205</geo:lat>
+        <geo:long>119.1035</geo:long>
+    </iml:Location>
+    
+    <iml:TCPNetworkProtocol rdf:about="#TCP"/>
+    <iml:UDPNetworkProtocol rdf:about="#UDP"/>
+    
+    <iml:ApplicationProtocol rdf:about="#OTH">
+        <iml:hasProtocol rdf:resource="#UDP"/>
+        <iml:portNumber>7010</iml:portNumber>
+    </iml:ApplicationProtocol>
+
+    <iml:ApplicationProtocol rdf:about="USMTF">
+        <iml:hasProtocol rdf:resource="#UDP"/>
+        <iml:portNumber>7005</iml:portNumber>
+    </iml:ApplicationProtocol>
+    
+    <iml:ApplicationProtocol rdf:about="#TENA_UDP">
+        <iml:hasProtocol rdf:resource="#UDP"/>
+        <iml:PortNumber>55200</iml:PortNumber>
+        <iml:PortNumber>55600</iml:PortNumber>
+        <iml:PortNumber>55700</iml:PortNumber>
+        <iml:PortNumber>55800</iml:PortNumber>
+        <iml:PortNumber>55900</iml:PortNumber>
+    </iml:ApplicationProtocol>
+    
+    <iml:ApplicationProtocol rdf:about="#TENA_TCP">
+        <iml:hasProtocol rdf:resource="#TCP"/>
+        <iml:PortNumber>55100</iml:PortNumber>
+        <iml:PortNumber>55300</iml:PortNumber>
+        <iml:PortNumber>55400</iml:PortNumber>
+        <iml:PortNumber>55500</iml:PortNumber>
+        <iml:PortNumber>55600</iml:PortNumber>
+        <iml:PortNumber>55700</iml:PortNumber>
+        <iml:PortNumber>55800</iml:PortNumber>
+        <iml:PortNumber>55900</iml:PortNumber>
+    </iml:ApplicationProtocol>
+
+    <iml:Application rdf:about="#Environment_Logger">
+        <iml:name>Environment Logger</iml:name>
+        <iml:hasProtocol rdf:resource="#OTH"/>
+        <iml:hasProtocol rdf:resource="#USMTF"/>
+    </iml:Application>
+
+    <iml:Application rdf:about="#TENA">
+        <iml:name>TENA</iml:name>
+        <iml:hasProtocol rdf:resource="#TENA_UDP"/>
+        <iml:hasProtocol rdf:resource="#TENA_TCP"/>
+    </iml:Application>
+    
+    <iml:Application rdf:about="#OS_Agent">
+        <iml:name>OS Agent</iml:name>
+        <iml:hasProtocol rdf:resource="#OTH"/>
+    </iml:Application>
+    
+    <iml:Application rdf:about="#ClearPath">
+        <iml:name>ClearPath</iml:name>
+        <iml:hasProtocol rdf:resource="#USMTF"/>
+    </iml:Application>
+    
+    
+    <!--
+        
+        tcc.mugu-jmesssvr
+
+
+        The network described in this file has the following layout:
+        
+        
+        _____________________                                                           _______________________
+        | tcc.mugu-jmesssvr |          tcc.mugu-jmesssvr.outbound.link                  | tcc.mugu-jmesssvr2  |
+        |                   |__________________________________________________________>|                     |
+        |                   |<__________________________________________________________|                     |
+        _____________________          tcc.mugu-jmesssvr.inbound.link                   _______________________
+        hasInterface: eth0                                                              hasInterface eth0
+        
+    -->
+    <iml:NodeDevice iml:about="#tcc.mugu-jmesssvr">
+        <iml:name>tcc.mugu-jmesssvr</iml:name>
+        <iml:locatedAt rdf:resource="#domain.itec.com"/>
+        <iml:hasApplication rdf:resource="#TENA"/>
+        <iml:hasApplication rdf:resource="#OS_Agent"/>
+        <iml:hasApplication rdf:resource="#ClearPath"/>
+        <iml:hasInterface rdf:resource="#tcc.mugu-jmesssvr.eth0"/>
+    </iml:NodeDevice>
+    
+    <iml:PortInterface iml:about="#tcc.mugu-jmesssvr.eth0">
+        <iml:name>tcc.mugu-jmesssvr.eth0</iml:name>
+        <iml:id>uri:tcc.mugu-jmesssvr.eth0</iml:id>
+        <iml:hasIP>
+            <iml:IPV4Address>10.0.0.1</iml:IPV4Address>
+        </iml:hasIP>
+        <iml:hasSink rdf:resource="#tcc.mugu-jmesssvr.inbound.link"/>
+        <iml:hasSource rdf:resource="#tcc.mugu-jmesssvr.outbound.link"/>
+    </iml:PortInterface>
+    
+    <iml:NetworkLink iml:about="#tcc.mugu-jmesssvr.inbound.link">
+        <iml:name>tcc.mugu-jmesssvr.inbound.link</iml:name>
+        <iml:id>uri:tcc.mugu-jmesssvr.inbound.link</iml:id>
+        <iml:capacity>24000</iml:capacity>
+        <iml:hasSink rdf:resource="#tcc.mugu-jmesssvr.eth0"/>
+        <iml:hasSource rdf:resource="#tcc.mugu-jmesssvr2.eth0"/>
+    </iml:NetworkLink>
+    
+    <iml:NetworkLink iml:about="#tcc.mugu-jmesssvr.outbound.link">
+        <iml:name>tcc.mugu-jmesssvr.outbound.link</iml:name>
+        <iml:id>tcc.mugu-jmesssvr.outbound.link</iml:id>
+        <iml:capacity>24000</iml:capacity>
+        <iml:hasSink rdf:resource="#tcc.mugu-jmesssvr2.eth0"/>
+        <iml:hasSource rdf:resource="#tcc.mugu-jmesssvr.eth0"/>
+    </iml:NetworkLink>
+    
+    <!-- 
+        
+        tcc.mugu-jmesssvr2
+        
+    -->
+    <iml:NodeDevice iml:about="#tcc.mugu-jmesssvr2">
+        <iml:name>tcc.mugu-jmesssvr2</iml:name>
+        <iml:locatedAt rdf:resource="#domain.itec.com"/>
+        <iml:hasApplication rdf:resource="#TENA"/>
+        <iml:hasInterface rdf:resource="#tcc.mugu-jmesssvr2.eth0"/>
+    </iml:NodeDevice>
+    <iml:PortInterface iml:about="#tcc.mugu-jmesssvr2.eth0">
+        <iml:name>tcc.mugu-jmesssvr2.eth0</iml:name>
+        <iml:id>uri:tcc.mugu-jmesssvr2.eth0</iml:id>
+        <iml:hasIP>
+            <iml:IPV4Address>10.0.0.2</iml:IPV4Address>
+        </iml:hasIP>
+        <iml:hasSink rdf:resource="#tcc.mugu-jmesssvr.outbound.link"/>
+        <iml:hasSource rdf:resource="#tcc.mugu-jmesssvr.inbound.link"/>
+    </iml:PortInterface>
+
+
+
+</rdf:RDF>

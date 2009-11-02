@@ -1,41 +1,36 @@
 package jpl.simle.domain;
 
-import java.lang.String;
-import java.util.Date;
-import jpl.simle.domain.Application;
-import jpl.simle.domain.Host;
-
 privileged aspect HostApplication_Roo_JavaBean {
     
-    public Host HostApplication.getHost() {    
+    public jpl.simle.domain.Host HostApplication.getHost() {    
         return this.host;        
     }    
     
-    public void HostApplication.setHost(Host host) {    
+    public void HostApplication.setHost(jpl.simle.domain.Host host) {    
         this.host = host;        
     }    
     
-    public Application HostApplication.getApplication() {    
+    public jpl.simle.domain.Application HostApplication.getApplication() {    
         return this.application;        
     }    
     
-    public void HostApplication.setApplication(Application application) {    
+    public void HostApplication.setApplication(jpl.simle.domain.Application application) {    
         this.application = application;        
     }    
     
-    public String HostApplication.getComment() {    
+    public java.lang.String HostApplication.getComment() {    
         return this.comment;        
     }    
     
-    public void HostApplication.setComment(String comment) {    
+    public void HostApplication.setComment(java.lang.String comment) {    
         this.comment = comment;        
     }    
     
-    public Date HostApplication.getDateAdded() {    
+    public java.util.Date HostApplication.getDateAdded() {    
         return this.dateAdded;        
     }    
     
-    public void HostApplication.setDateAdded(Date dateAdded) {    
+    public void HostApplication.setDateAdded(java.util.Date dateAdded) {    
         this.dateAdded = dateAdded;        
     }    
     

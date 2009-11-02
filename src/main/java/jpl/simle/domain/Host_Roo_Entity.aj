@@ -1,39 +1,29 @@
 package jpl.simle.domain;
 
-import java.lang.Integer;
-import java.lang.Long;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
-import jpl.simle.domain.Host;
-import org.springframework.transaction.annotation.Transactional;
-
 privileged aspect Host_Roo_Entity {
     
-    @PersistenceContext    
-    transient EntityManager Host.entityManager;    
+    @javax.persistence.PersistenceContext    
+    transient javax.persistence.EntityManager Host.entityManager;    
     
-    @Version    
-    @Column(name = "version")    
-    private Integer Host.version;    
+    @javax.persistence.Version    
+    @javax.persistence.Column(name = "version")    
+    private java.lang.Integer Host.version;    
     
-    public Integer Host.getVersion() {    
+    public java.lang.Integer Host.getVersion() {    
         return this.version;        
     }    
     
-    public void Host.setVersion(Integer version) {    
+    public void Host.setVersion(java.lang.Integer version) {    
         this.version = version;        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void Host.persist() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.persist(this);        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void Host.remove() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         if (this.entityManager.contains(this)) {        
@@ -44,13 +34,13 @@ privileged aspect Host_Roo_Entity {
         }        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void Host.flush() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.flush();        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void Host.merge() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         Host merged = this.entityManager.merge(this);        
@@ -58,8 +48,8 @@ privileged aspect Host_Roo_Entity {
         this.id = merged.getId();        
     }    
     
-    public static EntityManager Host.entityManager() {    
-        EntityManager em = new Host().entityManager;        
+    public static javax.persistence.EntityManager Host.entityManager() {    
+        javax.persistence.EntityManager em = new Host().entityManager;        
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");        
         return em;        
     }    
@@ -68,16 +58,16 @@ privileged aspect Host_Roo_Entity {
         return (Long) entityManager().createQuery("select count(o) from Host o").getSingleResult();        
     }    
     
-    public static List<Host> Host.findAllHosts() {    
+    public static java.util.List<jpl.simle.domain.Host> Host.findAllHosts() {    
         return entityManager().createQuery("select o from Host o").getResultList();        
     }    
     
-    public static Host Host.findHost(Long id) {    
+    public static jpl.simle.domain.Host Host.findHost(java.lang.Long id) {    
         if (id == null) throw new IllegalArgumentException("An identifier is required to retrieve an instance of Host");        
         return entityManager().find(Host.class, id);        
     }    
     
-    public static List<Host> Host.findHostEntries(int firstResult, int maxResults) {    
+    public static java.util.List<jpl.simle.domain.Host> Host.findHostEntries(int firstResult, int maxResults) {    
         return entityManager().createQuery("select o from Host o").setFirstResult(firstResult).setMaxResults(maxResults).getResultList();        
     }    
     

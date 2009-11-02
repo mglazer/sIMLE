@@ -1,15 +1,13 @@
 package jpl.simle.domain;
 
-import java.lang.String;
-
 privileged aspect Authority_Roo_ToString {
     
-    public String Authority.toString() {    
+    public java.lang.String Authority.toString() {    
         StringBuilder sb = new StringBuilder();        
-        sb.append("Id: ").append(getId()).append(", ");        
-        sb.append("Version: ").append(getVersion()).append(", ");        
-        sb.append("Username: ").append(getUsername()).append(", ");        
-        sb.append("Authority: ").append(getAuthority());        
+        sb.append("id: ").append(getId()).append(", ");        
+        sb.append("version: ").append(getVersion()).append(", ");        
+        sb.append("username: ").append(getUsername()).append(", ");        
+        sb.append("authority: ").append(getAuthority());        
         return sb.toString();        
     }    
     

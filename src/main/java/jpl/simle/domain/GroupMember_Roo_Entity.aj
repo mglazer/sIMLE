@@ -1,55 +1,42 @@
 package jpl.simle.domain;
 
-import java.lang.Integer;
-import java.lang.Long;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
-import jpl.simle.domain.GroupMember;
-import org.springframework.transaction.annotation.Transactional;
-
 privileged aspect GroupMember_Roo_Entity {
     
-    @PersistenceContext    
-    transient EntityManager GroupMember.entityManager;    
+    @javax.persistence.PersistenceContext    
+    transient javax.persistence.EntityManager GroupMember.entityManager;    
     
-    @Id    
-    @GeneratedValue(strategy = GenerationType.AUTO)    
-    @Column(name = "id")    
-    private Long GroupMember.id;    
+    @javax.persistence.Id    
+    @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)    
+    @javax.persistence.Column(name = "id")    
+    private java.lang.Long GroupMember.id;    
     
-    @Version    
-    @Column(name = "version")    
-    private Integer GroupMember.version;    
+    @javax.persistence.Version    
+    @javax.persistence.Column(name = "version")    
+    private java.lang.Integer GroupMember.version;    
     
-    public Long GroupMember.getId() {    
+    public java.lang.Long GroupMember.getId() {    
         return this.id;        
     }    
     
-    public void GroupMember.setId(Long id) {    
+    public void GroupMember.setId(java.lang.Long id) {    
         this.id = id;        
     }    
     
-    public Integer GroupMember.getVersion() {    
+    public java.lang.Integer GroupMember.getVersion() {    
         return this.version;        
     }    
     
-    public void GroupMember.setVersion(Integer version) {    
+    public void GroupMember.setVersion(java.lang.Integer version) {    
         this.version = version;        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void GroupMember.persist() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.persist(this);        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void GroupMember.remove() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         if (this.entityManager.contains(this)) {        
@@ -60,13 +47,13 @@ privileged aspect GroupMember_Roo_Entity {
         }        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void GroupMember.flush() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.flush();        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void GroupMember.merge() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         GroupMember merged = this.entityManager.merge(this);        
@@ -74,8 +61,8 @@ privileged aspect GroupMember_Roo_Entity {
         this.id = merged.getId();        
     }    
     
-    public static EntityManager GroupMember.entityManager() {    
-        EntityManager em = new GroupMember().entityManager;        
+    public static javax.persistence.EntityManager GroupMember.entityManager() {    
+        javax.persistence.EntityManager em = new GroupMember().entityManager;        
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");        
         return em;        
     }    
@@ -84,16 +71,16 @@ privileged aspect GroupMember_Roo_Entity {
         return (Long) entityManager().createQuery("select count(o) from GroupMember o").getSingleResult();        
     }    
     
-    public static List<GroupMember> GroupMember.findAllGroupMembers() {    
+    public static java.util.List<jpl.simle.domain.GroupMember> GroupMember.findAllGroupMembers() {    
         return entityManager().createQuery("select o from GroupMember o").getResultList();        
     }    
     
-    public static GroupMember GroupMember.findGroupMember(Long id) {    
+    public static jpl.simle.domain.GroupMember GroupMember.findGroupMember(java.lang.Long id) {    
         if (id == null) throw new IllegalArgumentException("An identifier is required to retrieve an instance of GroupMember");        
         return entityManager().find(GroupMember.class, id);        
     }    
     
-    public static List<GroupMember> GroupMember.findGroupMemberEntries(int firstResult, int maxResults) {    
+    public static java.util.List<jpl.simle.domain.GroupMember> GroupMember.findGroupMemberEntries(int firstResult, int maxResults) {    
         return entityManager().createQuery("select o from GroupMember o").setFirstResult(firstResult).setMaxResults(maxResults).getResultList();        
     }    
     

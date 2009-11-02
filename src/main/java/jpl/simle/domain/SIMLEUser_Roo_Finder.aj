@@ -1,24 +1,21 @@
 package jpl.simle.domain;
 
-import java.lang.String;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import jpl.simle.domain.SIMLEGroup;
-
 privileged aspect SIMLEUser_Roo_Finder {
     
-    public static Query SIMLEUser.findSIMLEUsersByUsernameEquals(String username) {    
+    public static javax.persistence.Query SIMLEUser.findSIMLEUsersByUsernameEquals(java.lang.String username) {    
         if (username == null || username.length() == 0) throw new IllegalArgumentException("The username argument is required");        
-        EntityManager em = SIMLEUser.entityManager();        
-        Query q = em.createQuery("SELECT SIMLEUser FROM SIMLEUser AS simleuser WHERE simleuser.username = :username");        
+        javax.persistence.EntityManager em = new SIMLEUser().entityManager;        
+        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");        
+        javax.persistence.Query q = em.createQuery("SELECT SIMLEUser FROM SIMLEUser AS simleuser WHERE simleuser.username = :username");        
         q.setParameter("username", username);        
         return q;        
     }    
     
-    public static Query SIMLEUser.findSIMLEUsersByGroup(SIMLEGroup group) {    
+    public static javax.persistence.Query SIMLEUser.findSIMLEUsersByGroup(jpl.simle.domain.SIMLEGroup group) {    
         if (group == null) throw new IllegalArgumentException("The group argument is required");        
-        EntityManager em = SIMLEUser.entityManager();        
-        Query q = em.createQuery("SELECT SIMLEUser FROM SIMLEUser AS simleuser WHERE simleuser.group = :group");        
+        javax.persistence.EntityManager em = new SIMLEUser().entityManager;        
+        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");        
+        javax.persistence.Query q = em.createQuery("SELECT SIMLEUser FROM SIMLEUser AS simleuser WHERE simleuser.group = :group");        
         q.setParameter("group", group);        
         return q;        
     }    

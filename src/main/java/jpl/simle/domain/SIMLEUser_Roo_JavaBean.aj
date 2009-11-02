@@ -1,49 +1,44 @@
 package jpl.simle.domain;
 
-import java.lang.Boolean;
-import java.lang.String;
-import java.util.Date;
-import jpl.simle.domain.SIMLEGroup;
-
 privileged aspect SIMLEUser_Roo_JavaBean {
     
-    public String SIMLEUser.getPassword() {    
+    public java.lang.String SIMLEUser.getPassword() {    
         return this.password;        
     }    
     
-    public void SIMLEUser.setPassword(String password) {    
+    public void SIMLEUser.setPassword(java.lang.String password) {    
         this.password = password;        
     }    
     
-    public Boolean SIMLEUser.getEnabled() {    
+    public java.lang.Boolean SIMLEUser.getEnabled() {    
         return this.enabled;        
     }    
     
-    public void SIMLEUser.setEnabled(Boolean enabled) {    
+    public void SIMLEUser.setEnabled(java.lang.Boolean enabled) {    
         this.enabled = enabled;        
     }    
     
-    public SIMLEGroup SIMLEUser.getGroup() {    
+    public jpl.simle.domain.SIMLEGroup SIMLEUser.getGroup() {    
         return this.group;        
     }    
     
-    public void SIMLEUser.setGroup(SIMLEGroup group) {    
+    public void SIMLEUser.setGroup(jpl.simle.domain.SIMLEGroup group) {    
         this.group = group;        
     }    
     
-    public String SIMLEUser.getSalt() {    
+    public java.lang.String SIMLEUser.getSalt() {    
         return this.salt;        
     }    
     
-    public void SIMLEUser.setSalt(String salt) {    
+    public void SIMLEUser.setSalt(java.lang.String salt) {    
         this.salt = salt;        
     }    
     
-    public Date SIMLEUser.getExpirationDate() {    
+    public java.util.Date SIMLEUser.getExpirationDate() {    
         return this.expirationDate;        
     }    
     
-    public void SIMLEUser.setExpirationDate(Date expirationDate) {    
+    public void SIMLEUser.setExpirationDate(java.util.Date expirationDate) {    
         this.expirationDate = expirationDate;        
     }    
     

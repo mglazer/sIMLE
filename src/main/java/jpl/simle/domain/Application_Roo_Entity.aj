@@ -1,39 +1,29 @@
 package jpl.simle.domain;
 
-import java.lang.Integer;
-import java.lang.Long;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
-import jpl.simle.domain.Application;
-import org.springframework.transaction.annotation.Transactional;
-
 privileged aspect Application_Roo_Entity {
     
-    @PersistenceContext    
-    transient EntityManager Application.entityManager;    
+    @javax.persistence.PersistenceContext    
+    transient javax.persistence.EntityManager Application.entityManager;    
     
-    @Version    
-    @Column(name = "version")    
-    private Integer Application.version;    
+    @javax.persistence.Version    
+    @javax.persistence.Column(name = "version")    
+    private java.lang.Integer Application.version;    
     
-    public Integer Application.getVersion() {    
+    public java.lang.Integer Application.getVersion() {    
         return this.version;        
     }    
     
-    public void Application.setVersion(Integer version) {    
+    public void Application.setVersion(java.lang.Integer version) {    
         this.version = version;        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void Application.persist() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.persist(this);        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void Application.remove() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         if (this.entityManager.contains(this)) {        
@@ -44,13 +34,13 @@ privileged aspect Application_Roo_Entity {
         }        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void Application.flush() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         this.entityManager.flush();        
     }    
     
-    @Transactional    
+    @org.springframework.transaction.annotation.Transactional    
     public void Application.merge() {    
         if (this.entityManager == null) this.entityManager = entityManager();        
         Application merged = this.entityManager.merge(this);        
@@ -58,8 +48,8 @@ privileged aspect Application_Roo_Entity {
         this.id = merged.getId();        
     }    
     
-    public static EntityManager Application.entityManager() {    
-        EntityManager em = new Application().entityManager;        
+    public static javax.persistence.EntityManager Application.entityManager() {    
+        javax.persistence.EntityManager em = new Application().entityManager;        
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");        
         return em;        
     }    
@@ -68,16 +58,16 @@ privileged aspect Application_Roo_Entity {
         return (Long) entityManager().createQuery("select count(o) from Application o").getSingleResult();        
     }    
     
-    public static List<Application> Application.findAllApplications() {    
+    public static java.util.List<jpl.simle.domain.Application> Application.findAllApplications() {    
         return entityManager().createQuery("select o from Application o").getResultList();        
     }    
     
-    public static Application Application.findApplication(Long id) {    
+    public static jpl.simle.domain.Application Application.findApplication(java.lang.Long id) {    
         if (id == null) throw new IllegalArgumentException("An identifier is required to retrieve an instance of Application");        
         return entityManager().find(Application.class, id);        
     }    
     
-    public static List<Application> Application.findApplicationEntries(int firstResult, int maxResults) {    
+    public static java.util.List<jpl.simle.domain.Application> Application.findApplicationEntries(int firstResult, int maxResults) {    
         return entityManager().createQuery("select o from Application o").setFirstResult(firstResult).setMaxResults(maxResults).getResultList();        
     }    
     
